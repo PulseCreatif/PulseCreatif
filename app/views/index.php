@@ -67,8 +67,8 @@ function select_esp_file() {
 						<li><a href="index.php">Home</a></li>
 						<?php if(!isset($_SESSION["user_role"])) {
 						?>
-                        <li><a href="signIn.php">Se Connecter</a></li>
-                        <li><a href="addUser.php">Créer un compte</a></li>
+                        <li><a href="signIn.php">Sign In</a></li>
+                        <li><a href="addUser.php">Sign Up</a></li>
 						<?php
 						}
 						else {

@@ -83,8 +83,8 @@ if (
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
 						<li><a href="index.php">Home</a></li>
-                        <li><a href="signIn.php">Se Connecter</a></li>
-                        <li><a href="addUser.php">Créer un compte</a></li>
+                        <li><a href="signIn.php">Sign In</a></li>
+                        <li><a href="addUser.php">Sign Up</a></li>
                         <!--
                         <li><a href="coures.html">Courses</a></li>
                         <li><a href="devoir.html">Devoir</a></li>
@@ -107,9 +107,9 @@ if (
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
 							<li><a href="index.html">Home</a></li>
-							<li>Créer un compte</li>
+							<li>Sign up</li>
 						</ul>
-						<h1 class="white-text">Créez votre compte PulseCreatif</h1>
+						<h1 class="white-text">Create a PulseCreatif account</h1>
 
 					</div>
 				</div>
@@ -125,7 +125,7 @@ if (
 		<!-- /Hero-area -->
         <form id="signupForm" action="" method="POST">
             <div>
-                <label for="Nom">Nom d'utilisateur:</label>
+                <label for="Nom">Username</label>
                 <input type="text" id="Nom" name="name" maxlength=20 required>
             </div>
 
@@ -134,7 +134,7 @@ if (
                 <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="telephone">Numéro de téléphone</label>
+                <label for="telephone">Phone number</label>
                 <input type="tel" id="telephone" name="phone" required>
             </div>
 
@@ -142,7 +142,7 @@ if (
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Créer votre compte</button>
+            <button type="submit">Create your account</button>
         </form>
 
 
