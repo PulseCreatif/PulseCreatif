@@ -102,7 +102,7 @@ else if ($user and $user["USER_ROLE"] == "3") {
 				<div class="navbar-header">
 					<!-- Logo -->
 					<div class="navbar-brand">
-						<a class="logo" href="index.html">
+						<a class="logo" href="index.php">
 							<img src="img/logo-alt.png" alt="logo">
 						</a>
 					</div>
@@ -136,7 +136,7 @@ else if ($user and $user["USER_ROLE"] == "3") {
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
-							<li><a href="index.html">Home</a></li>
+							<li><a href="index.php">Home</a></li>
 							<li>Sign in</li>
 						</ul>
 						<h1 class="white-text">Login to your PulseCreatif account</h1>

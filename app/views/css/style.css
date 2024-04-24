@@ -1383,7 +1383,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 
 /* Style pour le formulaire de création d'un compte */
 #signupForm {
-    width: 300px; /* Largeur du formulaire */
+    width: 350px; /* Largeur du formulaire */
     margin: 0 auto; /* Centrage horizontal */
 	margin-top: 50px;
     padding: 20px; /* Espace intérieur */
@@ -1424,6 +1424,84 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 #signupForm button:hover {
     background-color: #45a049; /* Couleur de fond au survol */
 }
+
+
+/* GEMINI FORM */
+/* Style pour le formulaire de création d'un compte */
+#chatForm {
+    width: 500px; /* Largeur du formulaire */
+    height: 200px;
+    margin: 0 auto; /* Centrage horizontal */
+    margin-top: 50px;
+    padding: 20px; /* Espace intérieur */
+    border: 2px solid #ccc; /* Bordure */
+    border-radius: 10px; /* Coins arrondis */
+    background-color: transparent; /* Couleur de fond */
+}
+
+/* Style pour les champs de formulaire */
+#chatForm div {
+    margin-bottom: 15px; /* Espace entre les champs */
+}
+
+#chatForm label {
+    display: block; /* Affichage en bloc pour occuper toute la largeur */
+    margin-bottom: 5px; /* Espace sous l'étiquette */
+    font-weight: bold; /* Texte en gras */
+    /* Add your new styles here */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+    max-height: 100px; /* Limit label height to 100px */
+}
+
+#chatForm button {
+    width: 100%; /* Largeur maximale */
+    padding: 10px; /* Espace intérieur */
+    border: 1px solid #ccc; /* Bordure */
+    border-radius: 5px; /* Coins arrondis */
+    box-sizing: border-box; /* Inclure la bordure et le remplissage dans la largeur */
+    text-align: center;
+	color: white;
+	cursor: pointer;
+	background-color: #4CAF50;
+}
+
+#chatForm input[type="text"] {
+    width: 100%; /* Make input occupy full width */
+    padding: 10px; /* Espace intérieur */
+    border: 1px solid #ccc; /* Bordure */
+    border-radius: 5px; /* Coins arrondis */
+    box-sizing: border-box; /* Inclure la bordure et le remplissage dans la largeur */
+    text-align: left;
+}
+
+
+
+/* Style pour le bouton */
+#chatForm button {
+    background-color: #4CAF50; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    cursor: pointer; /* Curseur de souris */
+}
+
+#chatForm button:hover {
+    background-color: #45a049; /* Couleur de fond au survol */
+}
+
+.answer {
+	width: 500px; /* Largeur du formulaire */
+    height: 400px;
+    margin: 0 auto; /* Centrage horizontal */
+    margin-top: 50px;
+    padding: 20px; /* Espace intérieur */
+    border: 2px solid #ccc; /* Bordure */
+    border-radius: 10px; /* Coins arrondis */
+    background-color: transparent; /* Couleur de fond */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+    white-space: pre-wrap; /* Preserve line breaks */
+	text-align: left;
+}
+
+/* ------------------- */
 
 .container {
     margin-top: 50px; /* Ajustez selon vos besoins */
@@ -1509,4 +1587,8 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     text-decoration: none;
     padding: 8px 64px 8px 24px;
     color: white;
+}
+
+.g-recaptcha {
+	width: 100px;
 }

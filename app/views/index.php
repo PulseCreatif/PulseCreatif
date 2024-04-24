@@ -7,7 +7,7 @@ if (!isset($_SESSION["user_role"])) {
 
 error_reporting(E_ALL);
 require_once(__DIR__."/../../config/config.php");
-
+require_once(__DIR__."/../utils.php");
 
 function select_esp_file() {
 	if ($_SESSION["user_role"] == 0) {
@@ -54,7 +54,7 @@ function select_esp_file() {
 				<div class="navbar-header">
 					<!-- Logo -->
 					<div class="navbar-brand">
-						<a class="logo" href="index.html">
+						<a class="logo" href="index.php">
 							<img src="img/logo-alt.png" alt="logo">
 						</a>
 					</div>
@@ -73,8 +73,8 @@ function select_esp_file() {
 						}
 						else {
 							?>
-								<li><a href="<?=select_esp_file()?>">Compte</a></li>
-								<li><a href="disconnect.php">Se déconnecter</a></li>
+								<li><a href="<?=select_esp_file()?>">Account</a></li>
+								<li><a href="disconnect.php">Logout</a></li>
 						<?php
 						}
 						?>
@@ -462,35 +462,6 @@ function select_esp_file() {
 		<footer id="footer" class="section">
 
 			<!-- container -->
-			<div class="container">
-
-				<!-- row -->
-				<div class="row">
-
-					<!-- footer logo -->
-					<div class="col-md-6">
-						<div class="footer-logo">
-							<a class="logo" href="index.html">
-								<img src="img/logo.png" alt="logo">
-							</a>
-						</div>
-					</div>
-					<!-- footer logo -->
-
-					<!-- footer nav -->
-					<div class="col-md-6">
-						<ul class="footer-nav">
-						<li><a href="index.html">Home</a></li>
-                        <li><a href="user.html">Utilisateur</a></li>
-                        <li><a href="coures.html">Courses</a></li>
-                        <li><a href="devoir.html">Devoir</a></li>
-                        <li><a href="reclamation.html">Reclamation</a></li>
-                        <li><a href="formu.html">Forum</a></li>
-						</ul>
-					</div>
-					<!-- /footer nav -->
-
-				</div>
 				<!-- /row -->
 
 				<!-- row -->

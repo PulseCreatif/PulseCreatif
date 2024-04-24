@@ -4,6 +4,7 @@ session_start();
 require_once(__DIR__.'/../../app/controllers/UserC.php');
 require_once(__DIR__.'/../../app/models/User.php');
 require_once(__DIR__.'/../../app/utils.php');
+require_once(__DIR__.'/../../app/recaptcha-master/src/autoload.php');
 
 $error = "";
 
@@ -18,12 +19,23 @@ if (
     isset($_POST["name"]) &&
     isset($_POST["phone"]) &&
     isset($_POST["email"]) &&
-    isset($_POST["password"])
+    isset($_POST["password"]) &&
+    isset($_POST["g-recaptcha-response"])
 ) {
     $input_validation = validate_form_input_signup($_POST["name"], $_POST["password"],
     $_POST["phone"], $_POST["email"]);
 
-    if ($input_validation) {
+    // reCAPTCHA
+    $secret = "6LdiKcYpAAAAAGraGHAGLqxH5Oh4DwFk-25ykec_";
+    $recaptcha = new \ReCaptcha\ReCaptcha($secret);
+
+    $gRecaptchaResponse = $_POST["g-recaptcha-response"];
+
+    $resp = $recaptcha->setExpectedHostname('localhost')
+                ->verify($gRecaptchaResponse);
+    
+
+    if ($input_validation and $resp->isSuccess()) {
         $user = new user(
             id:null,
             name: $_POST["name"],
@@ -34,6 +46,7 @@ if (
         );
         $userC->addUser($user);
         $_SESSION["user_role"] = 1;
+
         header("Location:signIn.php");
         exit();      
     } else {
@@ -56,6 +69,9 @@ if (
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link type="text/css" rel="stylesheet" href="css/style.css"/>
 
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        
+
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -72,7 +88,7 @@ if (
 				<div class="navbar-header">
 					<!-- Logo -->
 					<div class="navbar-brand">
-						<a class="logo" href="index.html">
+						<a class="logo" href="index.php">
 							<img src="img/logo-alt.png" alt="logo">
 						</a>
 					</div>
@@ -106,7 +122,7 @@ if (
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
-							<li><a href="index.html">Home</a></li>
+							<li><a href="index.php">Home</a></li>
 							<li>Sign up</li>
 						</ul>
 						<h1 class="white-text">Create a PulseCreatif account</h1>
@@ -142,9 +158,12 @@ if (
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
+
+            <div class="g-recaptcha" data-sitekey="6LdiKcYpAAAAAMKeEihNupuDfND3seiAZ-Gr-d89"></div>
+            <br/>
+
             <button type="submit">Create your account</button>
         </form>
-
 
 
     <!-- Footer -->

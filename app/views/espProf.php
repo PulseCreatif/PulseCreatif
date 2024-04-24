@@ -40,11 +40,8 @@ if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 3) {
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="coures.html">Courses</a></li>
-                        <li><a href="devoir.html">Devoir</a></li>
-                        <li><a href="reclamation.html">Reclamation</a></li>
-                        <li><a href="formu.html">Forum</a></li>
-						<li><a href="disconnect.php">Se déconnecter</a></li>
+						<li><a href="gemini.php">ChatBot</a></li>
+						<li><a href="disconnect.php">Logout</a></li>
 					</ul>
 				</nav>
 
