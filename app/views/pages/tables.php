@@ -10,8 +10,34 @@ if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
   exit();
 }
 
+function generateCSV($list) {
+
+  // Set HTTP header for CSV download
+  header('Content-Type: text/csv');
+  header('Content-Disposition: attachment; filename="pdo_data.csv"');
+  
+
+  // Open output stream
+  $output = fopen('php://output', 'w');
+  // Write header row
+  fputcsv($output, array_keys($list[0]));
+
+  // Write data rows
+  foreach ($list as $user) {
+      fputcsv($output, $user);
+  }
+
+  // Close output stream
+  fclose($output);
+}
+
 $userC = new UserController();
 $list = $userC->listUsers();
+
+if (isset($_POST["generate_csv"])) {
+  generateCSV($list);
+  exit;
+}
 ?>
 
 
@@ -194,6 +220,13 @@ $list = $userC->listUsers();
     }
     ?>
   </table>
+</div>
+
+<div class="pdfForm">
+  <form action="" method="POST">
+    <input type="hidden" name="generate_csv">
+    <button type="submit">Générer un document CSV</button>
+  </form>
 </div>
 
 
