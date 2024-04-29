@@ -1,8 +1,18 @@
 <?php
-include '../controleur/CoursC.php';
+include 'c:/xampp/htdocs/projetweb/Controller/CoursC.php';
+include 'c:/xampp/htdocs/projetweb/Model/cours.php';
 $CoursC = new CoursC();
-$tab = $CoursC->listcours();
+//$tab = $CoursC->listcours();
+if (isset($_GET['search'])) {
+    // Get the search query from the URL
+    $search_query = $_GET['search'];
 
+    // Perform the search based on the course name or professor's name
+    $tab = $CoursC->searchCours($search_query);
+} else {
+    // If no search query is provided, display all courses
+    $tab = $CoursC->listcours();
+}
 ?>
 
 
@@ -89,9 +99,9 @@ $tab = $CoursC->listcours();
                 <div id="aside" class="col-md-3 pull-right">
                     <!-- Search widget -->
                     <div class="widget search-widget">
-                        <form>
+                        <form method="GET" action="">
                             <input class="input" type="text" name="search" placeholder="Search...">
-                            <button><i class="fa fa-search"></i></button>
+                            <button type="submit"><i class="fa fa-search"></i></button>
                         </form>
                     </div>
                     <!-- /Search widget -->
@@ -114,7 +124,7 @@ $tab = $CoursC->listcours();
                                             <img src="img/course01.jpg" alt="">
                                             <i class="course-link-icon fa fa-link"></i>
                                         </a>
-                                        <a class="course-title" href="#"><? $cours['Nom_Ens'] ?></a>
+                                        <a class="course-title" href="#"><?= $cours['Nom_cours'] ?></a>
                                         <div class="course-details">
                                             <span class="course-category"><?= $cours['Nbr_heures']; ?> h</span>
                                             <?php if ($cours['Type_cours'] == 1) { ?>
@@ -135,7 +145,7 @@ $tab = $CoursC->listcours();
                     <!-- /courses -->
                     <div class="row">
                         <div class="center-btn">
-                            <a class="main-button icon-button" href="#">More Courses</a>
+                            <a class="main-button icon-button" href="coursesf.php">More Courses</a>
                         </div>
                     </div>
                 </div>

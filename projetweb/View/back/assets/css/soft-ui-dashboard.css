@@ -22,6 +22,8 @@
    * Copyright 2011-2022 Twitter, Inc.
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    */
+
+  
 :root {
   --bs-blue: #63B3ED;
   --bs-indigo: #596CFF;
@@ -26693,6 +26695,25 @@ pre[class*="language-"] {
   .ps {
     overflow: auto !important;
   }
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+
+th:last-child, td:last-child {
+  border-right: none;
+}
+
+th {
+  background-color: #f2f2f2;
 }
 
 /*# sourceMappingURL=dashboard-free.css.map */
