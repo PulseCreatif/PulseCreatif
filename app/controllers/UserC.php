@@ -84,4 +84,19 @@ class UserController {
             die('Error: ' . $e->getMessage());
         }
     }
+
+    function showUser_byName($username)
+    {
+        $sql = "SELECT * from myapp.TABLE_USER where USER_NAME = '$username'";
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute();
+
+            $user = $query->fetch();
+            return $user;
+        } catch (Exception $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
 }
