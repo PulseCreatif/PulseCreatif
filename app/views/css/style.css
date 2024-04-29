@@ -1428,6 +1428,14 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 
 /* GEMINI FORM */
 /* Style pour le formulaire de création d'un compte */
+
+.geminiContainer {
+	display: flex;
+	flex-direction: row; /* Align items horizontally */
+	align-items: center; /* Center items vertically */
+	justify-content: center; /* Center items horizontally */
+}
+
 #chatForm {
     width: 500px; /* Largeur du formulaire */
     height: 200px;
@@ -1474,8 +1482,6 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     text-align: left;
 }
 
-
-
 /* Style pour le bouton */
 #chatForm button {
     background-color: #4CAF50; /* Couleur de fond */
@@ -1488,17 +1494,16 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 }
 
 .answer {
-	width: 500px; /* Largeur du formulaire */
-    height: 400px;
-    margin: 0 auto; /* Centrage horizontal */
-    margin-top: 50px;
+	display: inline-block;
+	width: 500px;
+	margin: 50px auto 20px -20px;  /* Margin top, right, bottom, left (use auto for left) */
     padding: 20px; /* Espace intérieur */
     border: 2px solid #ccc; /* Bordure */
     border-radius: 10px; /* Coins arrondis */
     background-color: transparent; /* Couleur de fond */
     overflow-y: auto; /* Add vertical scrollbar if needed */
     white-space: pre-wrap; /* Preserve line breaks */
-	text-align: left;
+	text-align: center;
 }
 
 /* ------------------- */

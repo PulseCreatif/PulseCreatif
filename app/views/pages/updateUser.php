@@ -35,7 +35,7 @@ if (
       $user = new User(
           id:$_POST['id'],
           name:$_POST['name'],
-          email:$_POST['email'],
+          email:$_POST['email'],  
           phone:$_POST['phone'],
           role:$_POST["role"],
           password:$_POST["password"]

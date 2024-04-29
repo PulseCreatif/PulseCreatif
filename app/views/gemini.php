@@ -2,6 +2,15 @@
 
 $responseData = null;
 
+// Function to escape markdown characters
+function escapeMarkdownChars($text) {
+    // Escape characters used for formatting in markdown
+    $text = htmlspecialchars($text, ENT_QUOTES);
+    $text = str_replace(['*', '_', '~'], ['&#42;', '&#95;', '&#126;'], $text);
+    return $text;
+}
+  
+
 if (isset($_POST["prompt"]) and !empty($_POST["prompt"])) {
     // URL endpoint
     $url = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=AIzaSyCHfh2ZufGd9SBw8WGBZbxFXAayd5UKEcw';
@@ -129,24 +138,26 @@ if (isset($_POST["prompt"]) and !empty($_POST["prompt"])) {
 
 		</div>
 
-		<!-- /Hero-area -->
-        <form id="chatForm" action="" method="POST">
-            <div>
-                <label for="prompt">Chat Prompt</label>
-                <input type="text" id="prompt" name="prompt" required placeholder="Ask a question">
-                <hr>
-            <button type="submit">Submit your question</button>
-        </form>
+        <div class="geminiContainer">
+            <!-- /Hero-area -->
+            <form id="chatForm" action="" method="POST">
+                <div>
+                    <label for="prompt">Chat Prompt</label>
+                    <input type="text" id="prompt" name="prompt" required placeholder="Ask a question">
+                    <hr>
+                <button type="submit">Submit your question</button>
+            </form>
 
-        <?php
-            if ($responseData != null) {
-                ?>
-                <div class="answer">
-                    <?= $responseData["candidates"][0]["content"]["parts"][0]["text"] ?>
-                </div>
-        <?php
-            }
-        ?>
+            <?php
+                if ($responseData != null) {
+                    ?>
+                    <div class="answer">
+                        <?= htmlspecialchars($responseData["candidates"][0]["content"]["parts"][0]["text"])?>
+                    </div>
+            <?php
+                }
+            ?>
+        </div>
 
 
     <!-- preloader -->
