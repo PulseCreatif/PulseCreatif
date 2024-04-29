@@ -26696,3 +26696,26 @@ pre[class*="language-"] {
 }
 
 /*# sourceMappingURL=dashboard-free.css.map */
+
+.sortForm {
+  padding-left: 340px;
+  padding-top: 50px;
+}
+
+#sortButton {
+  margin-left: 470px;
+}
+
+.searchForm {
+  padding-left: 340px;
+  padding-top: 50px;
+}
+
+#searchButton {
+  margin-left: 170px;
+}
+
+.pdfForm {
+  margin-left: 400px;
+  margin-top: 25px;
+}
