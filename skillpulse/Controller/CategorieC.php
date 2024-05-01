@@ -15,31 +15,38 @@ class CategorieC
             die('Error:' . $e->getMessage());
         }
     }
-
     function addCategory($category)
     {
-        $sql = "INSERT INTO categorie (ID_Categorie_Primaire, Nom_Categorie, Description_Categorie) VALUES (:ID_Categorie_Primaire, :Nom_Categorie, :Description_Categorie)";
+        $sql = "INSERT INTO categorie (ID_Categorie, Nom_Categorie, Description_Categorie) VALUES (:ID_Categorie, :Nom_Categorie, :Description_Categorie)";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
             $query->execute([
-                'ID_Categorie_Primaire' => $category->getID_Categorie_Primaire(),
+                'ID_Categorie' => $category->getID_Categorie(),
                 'Nom_Categorie' => $category->getNom_Categorie(),
                 'Description_Categorie' => $category->getDescription_Categorie()
             ]);
+            // Optionally, you can return the ID of the inserted row
+            // return $db->lastInsertId();
+        } catch (PDOException $e) {
+            // Handle PDO exceptions
+            // For example, you can log the error or display a message to the user
+            echo 'Error: ' . $e->getMessage();
         } catch (Exception $e) {
-            die('Error:' . $e->getMessage());
+            // Handle other exceptions
+            echo 'Error: ' . $e->getMessage();
         }
     }
+    
 
     function updateCategory($category)
     {
-        $sql = "UPDATE categorie SET Nom_Categorie=:Nom_Categorie, Description_Categorie=:Description_Categorie WHERE ID_Categorie_Primaire=:ID_Categorie_Primaire";
+        $sql = "UPDATE categorie SET Nom_Categorie=:Nom_Categorie, Description_Categorie=:Description_Categorie WHERE ID_Categorie=:ID_Categorie";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
             $query->execute([
-                'ID_Categorie_Primaire' => $category->getID_Categorie_Primaire(),
+                'ID_Categorie' => $category->getID_Categorie(),
                 'Nom_Categorie' => $category->getNom_Categorie(),
                 'Description_Categorie' => $category->getDescription_Categorie()
             ]);
@@ -48,25 +55,25 @@ class CategorieC
         }
     }
 
-    function deleteCategory($id)
+    function deleteCategory($ID_Categorie)
     {
-        $sql = "DELETE FROM categorie WHERE ID_Categorie_Primaire=:ID_Categorie_Primaire";
+        $sql = "DELETE FROM categorie WHERE ID_Categorie=:ID_Categorie";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-            $query->execute(['ID_Categorie_Primaire' => $id]);
+            $query->execute(['ID_Categorie' => $ID_Categorie ]);
         } catch (Exception $e) {
             die('Error:' . $e->getMessage());
         }
     }
 
-    function getCategoryById($id)
+    function getCategoryById($ID_Categorie)
     {
-        $sql = "SELECT * FROM categorie WHERE ID_Categorie_Primaire=:ID_Categorie_Primaire";
+        $sql = "SELECT * FROM categorie WHERE ID_Categorie=:ID_Categorie";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-            $query->execute(['ID_Categorie_Primaire' => $id]);
+            $query->execute(['ID_Categorie' => $ID_Categorie ]);
             $category = $query->fetch();
             return $category;
         } catch (Exception $e) {

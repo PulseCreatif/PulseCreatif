@@ -1,3 +1,20 @@
+
+<?php
+include 'C:\xampp\htdocs\skillpulse\Controller\ReclamationsC.php';
+include 'C:\xampp\htdocs\skillpulse\Controller\CategorieC.php';
+require_once 'C:\xampp\htdocs\skillpulse\Model\Reclamation.php';
+require_once 'C:\xampp\htdocs\skillpulse\Model\Categorie.php';
+
+$reclamationC = new ReclamationsC();
+$categorieC = new CategorieC();
+
+  $listeReclamations = $reclamationC->listReclamations();
+  $categories = $categorieC->listCategories();
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,51 +159,93 @@
 
 
 
-
 <!-- Reclamation Form -->
 <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <h2>Reclamation Form</h2>
-            <form id="reclamation-form" action="traitement_reclamation.php" method="post">
-            <div class="form-group">
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"
-                                    required data-error="Please enter your name">
-                                <div class="help-block with-errors"></div>
-                            </div>
+            <form id="reclamation-form" action="traitement_reclamation.php" method="post" onsubmit="return validateForm()">
+            
+                <div class="form-group">
+                    <input type="text" name="Name" id="Name" class="form-control" placeholder="Your Name" >
 
-                            <div class="form-group">
-                                <input type="email" name="email" id="email" class="form-control"
-                                    placeholder="Your Email" required data-error="Please enter your email">
-                                <div class="help-block with-errors"></div>
-                            </div>
-
-
-                            <div class="form-group">
-                                <input type="text" name="subject" id="subject" class="form-control"
-                                    placeholder="Subject" required data-error="Please enter the subject">
-                                <div class="help-block with-errors"></div>
-                            </div>
-
-
-
-
+                </div>
 
                 <div class="form-group">
-                                <textarea name="description" class="form-control" id="description" rows="6"
-                                    placeholder="Your Message" required data-error="Please enter your message"></textarea>
-                                <div class="help-block with-errors"></div>
-                            </div>
+                    <input type="Email" name="Email" id="Email" class="form-control" placeholder="Your Email" >
+          
+                </div>
 
+                <div class="form-group">
+                    <select name="ID_Categorie" id="ID_Categorie" class="form-control" >
+                        <option value="" selected disabled>Select Category</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?php echo $category['ID_Categorie']; ?>"><?php echo $category['Nom_Categorie']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+ 
+                </div>
 
-      <button class="button" type="submit" class="default-btn">Submit Reclamation</button>
+                <div class="form-group">
+                    <input type="text" name="Subject" id="Subject" class="form-control" placeholder="Subject" >
+                </div>
 
+                <div class="form-group">
+                    <textarea name="Description" class="form-control" id="Description" rows="6" placeholder="Your Message" ></textarea>
+            
+                </div>
 
+                <button class="button" type="submit" class="default-btn">Submit Reclamation</button>
             </form>
         </div>
     </div>
 </div>
 <!-- End Reclamation Form -->
+
+
+
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('Name').value;
+        var email = document.getElementById('Email').value;
+        var subject = document.getElementById('Subject').value;
+        var description = document.getElementById('Description').value;
+        var statut = document.getElementById('ID_Categorie').value; // Retrieve the value of the 'ID_Categorie' field
+
+        // Regular expressions for validation
+        var lettersRegex = /^[A-Za-z\s]+$/; // Only letters and spaces
+
+        // Email validation regex from previous example
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (name.trim() === '' || email.trim() === '' || subject.trim() === '' || description.trim() === '' || statut.trim() === '') {
+            alert('All fields are required.');
+            return false; // Prevent form submission
+        }
+
+        if (!email.match(emailRegex)) {
+            alert('Please enter a valid email address.');
+            return false; // Prevent form submission
+        }
+
+        if (!description.match(lettersRegex)) {
+            alert('Description should contain only letters and spaces.');
+            return false; // Prevent form submission
+        }
+
+        if (!statut.match(lettersRegex)) {
+            alert('Statut should contain only letters and spaces.');
+            return false; // Prevent form submission
+        }
+
+        return true; // Allow form submission
+    }
+</script>
+
+
+
+
 
 <!-- Footer -->
 <footer id="footer" class="section">

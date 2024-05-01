@@ -1,40 +1,15 @@
 <?php
 include '../../../Controller/ReclamationsC.php';
+include '../../../Controller/CategorieC.php';
 require_once '../../../Model/Reclamation.php';
+require_once '../../../Model/Categorie.php';
 
 $reclamationC = new ReclamationsC();
+$categorieC = new CategorieC();
 
-if (isset($_GET['id'])) {
-  $reclamationToEdit = $reclamationC->getReclamationById($_GET['id']);
-}
-
-if (isset($_POST['add']) || isset($_POST['edit'])) {
-  if (isset($_POST['add'])) {
-    $reclamation = new Reclamation();
-    $reclamation->setType($_POST['type']);
-    $reclamation->setEtat($_POST['etat']);
-    $reclamation->setDescription($_POST['description']);
-    $reclamation->setEmail($_POST['email']);
-    $reclamationC->addReclamation($reclamation);
-  } else if (isset($_POST['edit'])) {
-    $reclamation = new Reclamation();
-    $reclamation->setIdR($_POST['id']);
-    $reclamation->setType($_POST['type']);
-    $reclamation->setEtat($_POST['etat']);
-    $reclamation->setDescription($_POST['description']);
-    $reclamation->setEmail($_POST['email']);
-    $reclamationC->modifyReclamation($reclamation);
-  }
-  header('Location: Reclamation.php');
-}
-
-if (isset($_POST['search'])) {
-  $listeReclamations = $reclamationC->listResearcher($_POST['search_text']);
-} else if (isset($_POST['tri'])) {
-  $listeReclamations = $reclamationC->listReclamations(); // Assuming this is the intended function for sorting
-} else {
   $listeReclamations = $reclamationC->listReclamations();
-}
+  $listeCategories = $categorieC->listCategories();
+
 ?>
 
 
@@ -51,112 +26,112 @@ if (isset($_POST['search'])) {
 
 
 
-    <!-- Reclamation Table code -->
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-              <h6>Reclamations table</h6>
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etat</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subject</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
-                      <th class="text-secondary opacity-7"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($listeReclamations as $reclamation): ?>
-                      <tr>
-                        <td>
-                          <p class="text-xs font-weight-bold mb-0"><?php echo $reclamation['Type']; ?></p>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Etat']; ?></span>
-                        </td>
+   <!-- Reclamation Table code -->
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Reclamations table</h6>
+          <!-- Button to redirect to stat.php -->
+          <a href="stat.php" class="btn btn-primary">View Statistics</a>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etat</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subject</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                  <th class="text-secondary opacity-7"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($listeReclamations as $reclamation): ?>
+                  <tr>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0"><?php echo $reclamation['Type']; ?></p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Etat']; ?></span>
+                    </td>
 
 
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Name']; ?></span>
-                        </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Name']; ?></span>
+                    </td>
 
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Subject']; ?></span>
-                        </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Subject']; ?></span>
+                    </td>
 
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Description']; ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Email']; ?></span>
-                        </td>
-
-
-                        <td class="align-middle">
-                          <a href="?edit=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-secondary me-2" data-toggle="tooltip" data-original-title="Edit reclamation">Edit</a>
-                          <a href="process_reclamation.php?delete=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-danger" data-toggle="tooltip" data-original-title="Delete reclamation">Delete</a>
-                        </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Description']; ?></span>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Email']; ?></span>
+                    </td>
 
 
-                        
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                    <td class="align-middle">
+                      <a href="edit_reclamation.php?idR=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-secondary me-2" data-toggle="tooltip" data-original-title="Edit">Edit</a>
+                      <a href="process_reclamation.php?delete=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-danger" data-toggle="tooltip" data-original-title="Delete reclamation">Delete</a>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
 
 
 
 
 
-   <!-- Add and Edit Reclamation Form -->
+  <!-- Add Reclamation Form -->
 <div class="container-fluid py-4">
   <div class="row">
     <div class="col-md-6">
-      <!-- Form for adding a new reclamation -->
-      <form method="POST" action="process_reclamation.php" onsubmit="return validateReclamationForm()">
+      <form method="POST" action="process_reclamation.php" enctype="multipart/form-data" onsubmit="return validateReclamationForm()">
         <div class="mb-3">
-          <label for="type" class="form-label">Type</label>
-          <input type="text" class="form-control" id="type" name="type" value="">
+          <label for="Type" class="form-label">Type</label>
+          <input type="text" class="form-control" id="Type" name="Type" value="">
         </div>
         <div class="mb-3">
-          <label for="etat" class="form-label">Etat</label>
-          <input type="text" class="form-control" id="etat" name="etat" value="">
+          <label for="Etat" class="form-label">Etat</label>
+          <input type="text" class="form-control" id="Etat" name="Etat" value="">
         </div>
         <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <input type="text" class="form-control" id="description" name="description" value="">
+          <label for="Description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="Description" name="Description" value="">
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" name="email" value="">
+          <label for="Email" class="form-label">Email</label>
+          <input type="Email" class="form-control" id="Email" name="Email" value="">
         </div>
-        <button type="submit" class="btn btn-primary" name="add">Add Reclamation</button>
+        <button type="submit" class="btn btn-primary" name="add_Rec">Add Reclamation</button>
       </form>
     </div>
   </div>
 </div>
 
+
+
 <script>
   function validateReclamationForm() {
-    var type = document.getElementById("type").value;
-    var etat = document.getElementById("etat").value;
-    var description = document.getElementById("description").value;
-    var email = document.getElementById("email").value;
+    var type = document.getElementById("Type").value;
+    var etat = document.getElementById("Etat").value;
+    var description = document.getElementById("Description").value;
+    var email = document.getElementById("Email").value;
 
     var errors = [];
 
@@ -191,35 +166,111 @@ if (isset($_POST['search'])) {
 
 
 
+<!-- Categories Table code -->
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Categories table</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">ID</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loop through categories -->
+                                <?php foreach ($listeCategories as $category): ?>
+                                <tr>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0"><?php echo $category['ID_Categorie']; ?></p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-secondary text-xs font-weight-bold"><?php echo $category['Nom_Categorie']; ?></span>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-secondary text-xs font-weight-bold"><?php echo $category['Description_Categorie']; ?></span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="edit_categorie.php?ID_Categorie=<?php echo $category['ID_Categorie']; ?>"
+                                            class="btn btn-sm btn-secondary me-2" data-toggle="tooltip"
+                                            data-original-title="Edit">Edit</a>
+                                            <a href="process_categorie.php?delete=<?php echo $category['ID_Categorie']; ?>" class="btn btn-sm btn-danger" data-toggle="tooltip" data-original-title="Delete">Delete</a>
 
-
-          <!-- Form for editing a reclamation -->
-          <?php if(isset($_GET['edit'])): ?>
-            <?php $reclamationToEdit = $reclamationC->getReclamationById($_GET['edit']); ?>
-            <form method="POST" action="process_reclamation.php">
-            <input type="hidden" name="id" value="<?php echo $reclamationToEdit['idR']; ?>">
-              <div class="mb-3">
-                <label for="type" class="form-label">Type</label>
-                <input type="text" class="form-control" id="type" name="type" value="<?php echo $reclamationToEdit['Type']; ?>">
-              </div>
-              <div class="mb-3">
-                <label for="etat" class="form-label">Etat</label>
-                <input type="text" class="form-control" id="etat" name="etat" value="<?php echo $reclamationToEdit['Etat']; ?>">
-              </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <input type="text" class="form-control" id="description" name="description" value="<?php echo $reclamationToEdit['Description']; ?>">
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="<?php echo $reclamationToEdit['Email']; ?>">
-              </div>
-              <button type="submit" class="btn btn-success" name="edit">Update Reclamation</button>
-            </form>
-          <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
+</div>
+
+
+
+<!-- Form for adding a new category -->
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-6">
+            <form method="POST" action="process_categorie.php" onsubmit="return validateCategoryForm()">
+                <div class="mb-3">
+                    <label for="Nom_Categorie" class="form-label">Nom Categorie</label>
+                    <input type="text" class="form-control" id="Nom_Categorie" name="Nom_Categorie" value="">
+                </div>
+                <div class="mb-3">
+                    <label for="Description_Categorie" class="form-label">Description Categorie</label>
+                    <input type="text" class="form-control" id="Description_Categorie" name="Description_Categorie" value="">
+                </div>
+                <button type="submit" class="btn btn-primary" name="add_category">Add Category</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    function validateCategoryForm() {
+        var nomCategorie = document.getElementById('Nom_Categorie').value.trim();
+        var descriptionCategorie = document.getElementById('Description_Categorie').value.trim();
+
+        // Regular expression to match only letters
+        var lettersRegex = /^[a-zA-Z]+$/;
+
+        // Check if the fields are empty
+        if (nomCategorie === '' || descriptionCategorie === '') {
+            alert('All fields are required!');
+            return false;
+        }
+
+        // Check if the input values contain only letters
+        if (!lettersRegex.test(nomCategorie) || !lettersRegex.test(descriptionCategorie)) {
+            alert('Name and description should contain only letters.');
+            return false;
+        }
+
+        return true; // Submit the form if all validations pass
+    }
+</script>
+
+
+
+
+
+
 
   </main>
 

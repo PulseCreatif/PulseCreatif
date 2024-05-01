@@ -6,6 +6,19 @@ require_once 'C:\xampp\htdocs\skillpulse\config.php'; // Include the config.php 
 class ReclamationsC
 {
 
+    public function countReclamationsByType() {
+        $sql = "SELECT Type, COUNT(*) AS count FROM reclamation GROUP BY Type";
+        $db = config::getConnexion();
+        try {
+            $query = $db->query($sql);
+            $reclamationsByType = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $reclamationsByType;
+        } catch (PDOException $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
+    
+    
     function listReclamations() 
     {
         $sql = "SELECT * FROM reclamation";
@@ -48,13 +61,13 @@ class ReclamationsC
         }
     }
 
-    function getReclamationById($id)
+    function getReclamationById($idR)
     {
-        $sql = "SELECT * FROM reclamation WHERE idR=:id";
+        $sql = "SELECT * FROM reclamation WHERE idR=:idR";
         $config = config::getConnexion();
         try {
             $querry = $config->prepare($sql);
-            $querry->execute(['id' => $id]);
+            $querry->execute(['idR' => $idR]);
             $result = $querry->fetch();
             return $result;
         } catch (PDOException $th) {
@@ -84,27 +97,29 @@ class ReclamationsC
 
 // FRONT CODE 
 
-
 public function addReclamationWithDetails($reclamation)
 {
     $config = config::getConnexion();
     try {
-        $query = $config->prepare('INSERT INTO reclamation (Name, Email, Subject, Description) VALUES (:Name, :Email, :Subject, :Description)');
+        // Prepare the SQL query with a placeholder for the category ID
+        $query = $config->prepare('INSERT INTO reclamation (Name, Email, Subject, Description, ID_Categorie) VALUES (:Name, :Email, :Subject, :Description, :ID_Categorie)');
+        
+        // Execute the query with values including the category ID
         $query->execute([
             'Name' => $reclamation->getName(),
             'Email' => $reclamation->getEmail(),
             'Subject' => $reclamation->getSubject(),
-            'Description' => $reclamation->getDescription()
+            'Description' => $reclamation->getDescription(),
+            'ID_Categorie' => $reclamation->getIdCategorie() // Assuming this method exists to retrieve the category ID from the $reclamation object
         ]);
+        
+        // Set the ID of the inserted reclamation
         $reclamation->setIdR($config->lastInsertId());
     } catch (PDOException $th) {
         // Return the error message
         return $th->getMessage();
     }
 }
-
-
-
 
 
 

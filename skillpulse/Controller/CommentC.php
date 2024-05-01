@@ -2,19 +2,22 @@
 require_once 'C:\xampp\htdocs\skillpulse\config.php'; // Include the config.php file
 class CommentC
 {
-    function listComments() 
+    function listComments()
     {
-        $sql = "SELECT * FROM comment";
+        $sql = "SELECT c.*, p.title AS post_title 
+                FROM comment c
+                LEFT JOIN post p ON c.id_post = p.id_post";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
             $query->execute();
             $comments = $query->fetchAll();
             return $comments;
-        } catch (Exception $e) {
-            die('Error:' . $e->getMessage());
+        } catch (PDOException $e) {
+            die('Error: ' . $e->getMessage());
         }
     }
+
 
     function addComment($comment)
     {
@@ -74,6 +77,25 @@ class CommentC
             die('Error:' . $e->getMessage());
         }
     }
+
+
+    function listCommentsWithCount() 
+    {
+        $sql = "SELECT id_post, COUNT(*) AS comment_count FROM comment GROUP BY id_post";
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute();
+            $commentsWithCount = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $commentsWithCount;
+        } catch (PDOException $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
+
+
+
+
 }
 
 ?>

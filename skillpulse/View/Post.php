@@ -1,11 +1,23 @@
 <?php
 require_once 'C:\xampp\htdocs\skillpulse\Controller\PostC.php'; // Include the PostC class file
+
+require_once 'C:\xampp\htdocs\skillpulse\Controller\CommentC.php';
+
 require_once 'C:\xampp\htdocs\skillpulse\Model\Post.php'; // Include the Post model file
+
+require_once 'C:\xampp\htdocs\skillpulse\Model\Comment.php';
+
 
 $postC = new PostC();
 $listPosts = $postC->listPosts();
-$Post = new Post() ; 
+$Post = new Post();
 
+
+$commentC = new CommentC();
+$listComments = $commentC->listComments();
+$Comment = new Comment();
+
+$commentsWithCount = $commentC->listCommentsWithCount();
 
 
 
@@ -21,146 +33,131 @@ $Post = new Post() ;
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<title>HTML Education Template</title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<!-- Google font -->
-		<link href="https://fonts.googleapis.com/css?family=Lato:700%7CMontserrat:400,600" rel="stylesheet">
+	<title>HTML Education Template</title>
 
-		<!-- Bootstrap -->
-		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:700%7CMontserrat:400,600" rel="stylesheet">
 
-		<!-- Font Awesome Icon -->
-		<link rel="stylesheet" href="css/font-awesome.min.css">
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
 
-		<!-- Custom stlylesheet -->
-		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
 
 
 
-		<style>
+	<style>
+		.small-logo {
+			width: 30px;
+			/* Adjust the width as needed */
+			height: auto;
+			/* Maintain aspect ratio */
 
-			.small-logo {
-				width: 30px; /* Adjust the width as needed */
-				height: auto; /* Maintain aspect ratio */
-			
-				transform: scale(3); /
-			}
-			
-			
-			</style>
+			transform: scale(3);/
+		}
+	</style>
 
-			
 
-    </head>
-	<body>
 
-		<!-- Header -->
-		<header id="header">
-			<div class="container">
+</head>
 
-				<div class="navbar-header">
-					<!-- Logo -->
-					<div class="navbar-brand">
-						<a class="logo" href="index.html">
-							<img src="./img/logo.png" alt="logo" class="small-logo">>
-						</a>
-					</div>
-					<!-- /Logo -->
+<body>
 
-					<!-- Mobile toggle -->
-					<button class="navbar-toggle">
-						<span></span>
-					</button>
-					<!-- /Mobile toggle -->
+	<!-- Header -->
+	<header id="header">
+		<div class="container">
+
+			<div class="navbar-header">
+				<!-- Logo -->
+				<div class="navbar-brand">
+					<a class="logo" href="index.html">
+						<img src="./img/logo.png" alt="logo" class="small-logo">>
+					</a>
 				</div>
+				<!-- /Logo -->
 
-				<!-- Navigation -->
-				<nav id="nav">
-					<ul class="main-menu nav navbar-nav navbar-right">
-						<li><a href="index.html">Home</a></li>
-						<li><a href="#">About</a></li>
-						<li><a href="#">Courses</a></li>
-						<li><a href="Reclamation.php">Reclamation</a></li>
-						<li><a href="Post.php">Post</a></li>
-						<li><a href="contact.html">Contact</a></li>
-					</ul>
-				</nav>
-				<!-- /Navigation -->
-
+				<!-- Mobile toggle -->
+				<button class="navbar-toggle">
+					<span></span>
+				</button>
+				<!-- /Mobile toggle -->
 			</div>
-		</header>
-		<!-- /Header -->
 
-		<!-- Hero-area -->
-		<div class="hero-area section">
-
-			<!-- Backgound Image -->
-			<div class="bg-image bg-parallax overlay" style="background-image:url(./img/page-background.jpg)"></div>
-			<!-- /Backgound Image -->
-
-			<div class="container">
-				<div class="row">
-					<div class="col-md-10 col-md-offset-1 text-center">
-						<ul class="hero-area-tree">
-							<li><a href="index.html">Home</a></li>
-							<li>Posts</li>
-						</ul>
-						<h1 class="white-text">Posts Page</h1>
-
-					</div>
-				</div>
-			</div>
+			<!-- Navigation -->
+			<nav id="nav">
+				<ul class="main-menu nav navbar-nav navbar-right">
+					<li><a href="index.html">Home</a></li>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Courses</a></li>
+					<li><a href="Reclamation.php">Reclamation</a></li>
+					<li><a href="Post.php">Post</a></li>
+					<li><a href="contact.html">Contact</a></li>
+				</ul>
+			</nav>
+			<!-- /Navigation -->
 
 		</div>
-		<!-- /Hero-area -->
+	</header>
+	<!-- /Header -->
 
-		<!-- Blog -->
-		<div id="blog" class="section">
+	<!-- Hero-area -->
+	<div class="hero-area section">
 
-			<!-- container -->
-			<div class="container">
+		<!-- Backgound Image -->
+		<div class="bg-image bg-parallax overlay" style="background-image:url(./img/page-background.jpg)"></div>
+		<!-- /Backgound Image -->
 
-				<!-- row -->
-				<div class="row">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1 text-center">
+					<ul class="hero-area-tree">
+						<li><a href="index.html">Home</a></li>
+						<li>Posts</li>
+					</ul>
+					<h1 class="white-text">Posts Page</h1>
 
-					<!-- main blog -->
-					<div id="main" class="col-md-9">
+				</div>
+			</div>
+		</div>
 
-						<!-- row -->
-						<div class="row">
+	</div>
+	<!-- /Hero-area -->
 
-
-						<?php foreach ($listPosts as $post): ?>
+<!-- Blog -->
+<div id="blog" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- main blog -->
+            <div id="main" class="col-md-9">
+                <!-- row -->
+                <div class="row">
+				<?php foreach ($listPosts as $post): ?>
     <!-- single blog -->
     <div class="col-md-6">
         <div class="single-blog">
             <div class="blog-img">
                 <!-- Adjusting the image path by prepending the base path -->
-                <?php 
-
-			
+                <?php
                 // Adjust the image path for the current post
                 $imagePathFromDatabase = $post['img']; // Assuming 'img' is the key for the image path in each post array
 
-               // Supprime le préfixe "../../Uploads/" et extrait le nom du fichier
-
+                // Remove the "../../Uploads/" prefix and extract the filename
                 $filename = basename($imagePathFromDatabase);
 
-			
-
-                // Construisez le chemin de l'image ajusté en concaténant le nouveau chemin de base et le nom du fichier
+                // Construct the adjusted image path by concatenating the new base path and the filename
                 $adjustedImagePath = 'Uploads/' . $filename;
-
-								//echo $adjustedImagePath
-
-
-
                 ?>
                 <img src="<?php echo $adjustedImagePath; ?>" alt="Post Image" width="100">
             </div>
@@ -169,232 +166,218 @@ $Post = new Post() ;
                 <span class="blog-meta-author">By: <a href="#"><?php echo $post['author']; ?></a></span>
                 <div class="pull-right">
                     <span><?php echo $post['date_created']; ?></span>
-                  <!-- En supposant que vous ayez un champ pour date_created dans votre base de données -->
+                    <!-- Assuming you have a field for date_created in your database -->
                 </div>
+            </div>
+            <!-- Display comments -->
+            <div class="blog-comments">
+                <?php
+                // Find the comment count for the current post
+                $commentCount = getCommentCount($post['id_post'], $commentsWithCount);
+                ?>
+                <h5>Comments: <?php echo $commentCount; ?></h5> <!-- Display the number of comments -->
+                <?php foreach ($listComments as $comment): ?>
+                    <?php if ($comment['id_post'] == $post['id_post']): ?>
+                        <div class="comment">
+                            <span class="comment-author"> Author :
+                                <?php echo $comment['authorC']; ?>:</span>
+                            <p><?php echo $comment['contentC']; ?></p>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+            <!-- Add comment form -->
+            <div class="add-comment">
+                <h5>Add Comment:</h5>
+				<form action="add_comment.php" method="POST">
+                    <input type="hidden" name="post_id" value="<?php echo $post['id_post']; ?>">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="authorC" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="contentC" rows="3" placeholder="Your Comment"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
     </div>
     <!-- /single blog -->
 <?php endforeach; ?>
 
+<?php
+// Function to get the comment count for a specific post
+function getCommentCount($postId, $commentsWithCount) {
+    foreach ($commentsWithCount as $commentCount) {
+        if ($commentCount['id_post'] == $postId) {
+            return $commentCount['comment_count'];
+        }
+    }
+    return 0; // Return 0 if no comments found
+}
+?>
 
 
-						
+                </div>
+                <!-- /row -->
 
+                <!-- row -->
+                <div class="row">
 
+                </div>
+                <!-- /row -->
+            </div>
 
+				<!-- /main blog -->
 
-						</div>
-						<!-- /ligne -->
+				<!-- aside blog -->
+				<div id="aside" class="col-md-3">
 
-					<!-- /ligne -->
-						<div class="row">
-
-	
-
-						</div>
-						<!-- /ligne -->
+					<!-- search widget -->
+					<div class="widget search-widget">
+						<form>
+							<input class="input" type="text" name="search">
+							<button><i class="fa fa-search"></i></button>
+						</form>
 					</div>
-					<!-- /main blog -->
+					<!-- /search widget -->
 
-					<!-- à part le blog -->
-					<div id="aside" class="col-md-3">
+					<!-- category widget -->
+					<div class="widget category-widget">
+						<h3>Categories</h3>
+						<a class="category" href="#">Web <span>12</span></a>
+						<a class="category" href="#">Css <span>5</span></a>
+						<a class="category" href="#">Wordpress <span>24</span></a>
+						<a class="category" href="#">Html <span>78</span></a>
+						<a class="category" href="#">Business <span>36</span></a>
+					</div>
+					<!-- /category widget -->
 
-						<!-- search widget -->
-						<div class="widget search-widget">
-							<form>
-								<input class="input" type="text" name="search">
-								<button><i class="fa fa-search"></i></button>
-							</form>
+					<!-- posts widget -->
+					<div class="widget posts-widget">
+						<h3>Recents Posts</h3>
+
+						<!-- single posts -->
+						<div class="single-post">
+							<a class="single-post-img" href="blog-post.html">
+								<img src="./img/post01.jpg" alt="">
+							</a>
+							<a href="blog-post.html">Pro eu error molestie deserunt.</a>
+							<p><small>By : John Doe .18 Oct, 2017</small></p>
 						</div>
-						<script>
-  function validatePostForm() {
-    var title = document.getElementById("title").value.trim();
-    var content = document.getElementById("contentP").value.trim();
-    var author = document.getElementById("author").value.trim();
-    var dateCreated = document.getElementById("date_created").value.trim();
+						<!-- /single posts -->
 
-    var errors = [];
-
-    // Validate title field
-    if (title === "") {
-      errors.push("Title is required");
-    } else if (title.length > 20) {
-      errors.push("Title cannot exceed 20 characters");
-    }
-
-    // Validate content field
-    if (content === "") {
-      errors.push("Content is required");
-    } else if (content.length > 200) {
-      errors.push("Content cannot exceed 200 characters");
-    }
-
-    // Validate author field
-    if (author === "") {
-      errors.push("Author is required");
-    } else if (author.length > 20) {
-      errors.push("Author cannot exceed 20 characters");
-    }
-
-    // Validate dateCreated field
-    if (dateCreated === "") {
-      errors.push("Date Created is required");
-    } else {
-      var currentDate = new Date();
-      var selectedDate = new Date(dateCreated);
-
-      // Check if the selected date is yesterday
-      if (selectedDate.toDateString() === currentDate.toDateString()) {
-        errors.push("Date cannot be yesterday");
-      }
-    }
-
-    if (errors.length > 0) {
-      // Display error messages
-      var errorMessage = errors.join("\n");
-      alert(errorMessage);
-      return false; // Prevent form submission
-    }
-
-    return true; // Allow form submission
-  }
-</script>
-
-
-						<!-- /search widget -->
-
-						<!-- category widget -->
-						<div class="widget category-widget">
-							<h3>Categories</h3>
-							<a class="category" href="#">Web <span>12</span></a>
-							<a class="category" href="#">Css <span>5</span></a>
-							<a class="category" href="#">Wordpress <span>24</span></a>
-							<a class="category" href="#">Html <span>78</span></a>
-							<a class="category" href="#">Business <span>36</span></a>
-						</div>
-						<!-- /category widget -->
-
-						<!-- posts widget -->
-						<div class="widget posts-widget">
-							<h3>Recents Posts</h3>
-
-							<!-- single posts -->
-							<div class="single-post">
-								<a class="single-post-img" href="blog-post.html">
-									<img src="./img/post01.jpg" alt="">
-								</a>
-								<a href="blog-post.html">Pro eu error molestie deserunt.</a>
-								<p><small>By : John Doe .18 Oct, 2017</small></p>
-							</div>
-							<!-- /single posts -->
-
-
-						</div>
-						<!-- /posts widget -->
-
-						<!-- tags widget -->
-						<div class="widget tags-widget">
-							<h3>Tags</h3>
-							<a class="tag" href="#">Web</a>
-							<a class="tag" href="#">Photography</a>
-							<a class="tag" href="#">Css</a>
-							<a class="tag" href="#">Responsive</a>
-							<a class="tag" href="#">Wordpress</a>
-							<a class="tag" href="#">Html</a>
-							<a class="tag" href="#">Website</a>
-							<a class="tag" href="#">Business</a>
-						</div>
-						<!-- /tags widget -->
 
 					</div>
-					<!-- /aside blog -->
+					<!-- /posts widget -->
+
+					<!-- tags widget -->
+					<div class="widget tags-widget">
+						<h3>Tags</h3>
+						<a class="tag" href="#">Web</a>
+						<a class="tag" href="#">Photography</a>
+						<a class="tag" href="#">Css</a>
+						<a class="tag" href="#">Responsive</a>
+						<a class="tag" href="#">Wordpress</a>
+						<a class="tag" href="#">Html</a>
+						<a class="tag" href="#">Website</a>
+						<a class="tag" href="#">Business</a>
+					</div>
+					<!-- /tags widget -->
 
 				</div>
-				<!-- row -->
+				<!-- /aside blog -->
 
 			</div>
-			<!-- container -->
+			<!-- row -->
 
 		</div>
-		<!-- /Blog -->
+		<!-- container -->
 
-		<!-- Footer -->
-		<footer id="footer" class="section">
+	</div>
+	<!-- /Blog -->
 
-			<!-- container -->
-			<div class="container">
+	<!-- Footer -->
+	<footer id="footer" class="section">
 
-				<!-- row -->
-				<div class="row">
+		<!-- container -->
+		<div class="container">
 
-					<!-- footer logo -->
-					<div class="col-md-6">
-						<div class="footer-logo">
-							<a class="logo" href="index.html">
-								<img src="./img/logo.png" alt="logo" class="small-logo">>
-							</a>
-						</div>
+			<!-- row -->
+			<div class="row">
+
+				<!-- footer logo -->
+				<div class="col-md-6">
+					<div class="footer-logo">
+						<a class="logo" href="index.html">
+							<img src="./img/logo.png" alt="logo" class="small-logo">>
+						</a>
 					</div>
-					<!-- footer logo -->
-
-					<!-- footer nav -->
-					<div class="col-md-6">
-						<ul class="footer-nav">
-							<li><a href="index.html">Home</a></li>
-							<li><a href="#">About</a></li>
-							<li><a href="#">Courses</a></li>
-							<li><a href="blog.html">Blog</a></li>
-							<li><a href="contact.html">Contact</a></li>
-						</ul>
-					</div>
-					<!-- /footer nav -->
-
 				</div>
-				<!-- /row -->
+				<!-- footer logo -->
 
-				<!-- row -->
-				<div id="bottom-footer" class="row">
-
-					<!-- social -->
-					<div class="col-md-4 col-md-push-8">
-						<ul class="footer-social">
-							<li><a href="#" class="facebook"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#" class="twitter"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a></li>
-							<li><a href="#" class="instagram"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="#" class="youtube"><i class="fa fa-youtube"></i></a></li>
-							<li><a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
-						</ul>
-					</div>
-					<!-- /social -->
-
-					<!-- copyright -->
-					<div class="col-md-8 col-md-pull-4">
-						<div class="footer-copyright">
-							<span>&copy; Copyright 2018. All Rights Reserved. | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com">Colorlib</a></span>
-						</div>
-					</div>
-					<!-- /copyright -->
-
+				<!-- footer nav -->
+				<div class="col-md-6">
+					<ul class="footer-nav">
+						<li><a href="index.html">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Courses</a></li>
+						<li><a href="blog.html">Blog</a></li>
+						<li><a href="contact.html">Contact</a></li>
+					</ul>
 				</div>
-				<!-- row -->
+				<!-- /footer nav -->
 
 			</div>
-			<!-- /container -->
+			<!-- /row -->
 
-		</footer>
-		<!-- /Footer -->
+			<!-- row -->
+			<div id="bottom-footer" class="row">
 
-		<!-- preloader -->
-		<div id='preloader'><div class='preloader'></div></div>
-		<!-- /preloader -->
+				<!-- social -->
+				<div class="col-md-4 col-md-push-8">
+					<ul class="footer-social">
+						<li><a href="#" class="facebook"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#" class="twitter"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#" class="instagram"><i class="fa fa-instagram"></i></a></li>
+						<li><a href="#" class="youtube"><i class="fa fa-youtube"></i></a></li>
+						<li><a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
+					</ul>
+				</div>
+				<!-- /social -->
+
+				<!-- copyright -->
+				<div class="col-md-8 col-md-pull-4">
+					<div class="footer-copyright">
+						<span>&copy; Copyright 2018. All Rights Reserved. | This template is made with <i
+								class="fa fa-heart-o" aria-hidden="true"></i> by <a
+								href="https://colorlib.com">Colorlib</a></span>
+					</div>
+				</div>
+				<!-- /copyright -->
+
+			</div>
+			<!-- row -->
+
+		</div>
+		<!-- /container -->
+
+	</footer>
+	<!-- /Footer -->
+
+	<!-- preloader -->
+	<div id='preloader'>
+		<div class='preloader'></div>
+	</div>
+	<!-- /preloader -->
 
 
-		<!-- jQuery Plugins -->
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
+	<!-- jQuery Plugins -->
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
 
-	</body>
+</body>
+
 </html>

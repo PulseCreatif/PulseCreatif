@@ -81,6 +81,7 @@ if (isset($_POST['edit'])) {
     }
 }
 
+
 // Delete Post
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
@@ -97,6 +98,10 @@ if (isset($_GET['delete'])) {
         exit();
     }
 }
+
+
+
+
 
 // Handle other cases or errors
 // You can add search logic here if needed

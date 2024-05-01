@@ -10,9 +10,20 @@ class Reclamation
     private $Name; // New variable for name
     private $Subject; // New variable for subject
 
+    private $idCategorie; // New property for the category ID
 
 
+    public function getIdCategorie()
+    {
+        return $this->idCategorie;
+    }
 
+    public function setIdCategorie($idCategorie)
+    {
+        $this->idCategorie = $idCategorie;
+    }
+
+    
     public function getIdR()
     {
         return $this->idR;

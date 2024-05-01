@@ -55,13 +55,13 @@ class PostC
 
 
 
-    function getPostById($id)
+    function getPostById($id_post)
     {
-        $sql = "SELECT * FROM post WHERE id_post=:id";
+        $sql = "SELECT * FROM post WHERE id_post=:id_post";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-            $query->execute(['id' => $id]);
+            $query->execute(['id_post' => $id_post]);
             $post = $query->fetch();
             return $post;
         } catch (PDOException $e) {
@@ -91,7 +91,7 @@ class PostC
     
     function updatePost($post)
     {
-        $sql = "UPDATE post SET title=:title, contentP=:contentP, author=:author, date_created=:date_created, img=:img WHERE id_post=:id_post";
+        $sql = "UPDATE post SET title=:title, contentP=:contentP, author=:author, date_created=:date_created WHERE id_post=:id_post";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
@@ -101,7 +101,6 @@ class PostC
                 'contentP' => $post->getContentP(),
                 'author' => $post->getAuthor(),
                 'date_created' => $post->getDate_created(),
-                'img' => $post->getImg() // Assuming getImg() returns the image data
             ]);
         } catch (PDOException $e) {
             die('Error: ' . $e->getMessage());
@@ -126,6 +125,10 @@ class PostC
         }
 
   
+
+
+
+
 
 }
 

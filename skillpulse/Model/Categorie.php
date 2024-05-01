@@ -2,18 +2,18 @@
 
 class Categorie
 {
-    private $ID_Categorie_Primaire;
+    private $ID_Categorie;
     private $Nom_Categorie;
     private $Description_Categorie;
 
-    public function getID_Categorie_Primaire()
+    public function getID_Categorie()
     {
-        return $this->ID_Categorie_Primaire;
+        return $this->ID_Categorie;
     }
 
-    public function setID_Categorie_Primaire($ID_Categorie_Primaire)
+    public function setID_Categorie($ID_Categorie)
     {
-        $this->ID_Categorie_Primaire = $ID_Categorie_Primaire;
+        $this->ID_Categorie = $ID_Categorie;
     }
 
     public function getNom_Categorie()
