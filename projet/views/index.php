@@ -500,7 +500,7 @@ require_once(__DIR__."/../config.php");
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
-		<script src="/js/script.js"></script>
+		<!--<script src="/../js/script.js"></script>-->
 
 	</body>
 </html>

@@ -1493,7 +1493,66 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 	margin-top: 0;
 	font-weight: bold;
   }
-  
- 
 
-  
+
+  /* Sidebar styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;  
+    height: 100%;   
+    background-color: #f8f9fa;  
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);  
+    padding-top: 20px;  
+}
+
+/* Navigation items styling */
+.navbar-nav .nav-item {
+    margin-bottom: 5px;  /* Adjust as needed */
+    padding: 5px;  /* Optional, to adjust internal padding */
+}
+
+/* SVG icon styling */
+.nav-link .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    margin-right: 8px;  /* Adjust the spacing between icon and text */
+}
+
+/* Text styling */
+.nav-link-text {
+    font-size: 1rem;  /* Adjust font size as needed */
+    color: #333;  /* Adjust text color */
+    margin-left: 8px;  /* Optional, adjust as needed */
+}
+
+/* Divider line */
+.horizontal {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;  /* Adjust line color */
+    margin-top: 0;
+    margin-bottom: 10px;  /* Space between line and next item */
+}
+
+/* Collapse functionality */
+.collapse {
+    width: 100%;  /* Ensure full width */
+    display: none;  /* Initially hide */
+}
+
+.collapse.show {
+    display: block;  /* Show when toggled */
+}
+
+.reponseEvalBard {
+	padding-top: 50px;
+	margin-top: 50px;
+}

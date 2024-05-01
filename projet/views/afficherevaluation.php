@@ -1,75 +1,73 @@
 <?php
 
-include __DIR__.'/../controllers/DevoirC.php';
-include __DIR__.'/../models/devoir.php';
-require_once __DIR__."/validation.php";
+session_start();
 
-$devoirC = new DevoirController();
+$_SESSION["description"] = null;
 
-if (isset($_POST["COURS_ID"]) &&
-    isset($_POST["DATE_LIMITE"]) &&
-    isset($_POST["COMMENTAIRE"]) &&
-    isset($_POST["ETAT"]) &&
-    isset($_FILES["fileToUpload"]["name"])) {
+require_once __DIR__.'/../controllers/EvaluationC.php';
+$EvaluationC = new EvaluationController();
+$list = $EvaluationC->listEvaluations();
 
-    $idCours = $_POST["COURS_ID"];
-    $dateLimite = $_POST["DATE_LIMITE"];
-    $commentaire = $_POST["COMMENTAIRE"];
-    $etat = (int) $_POST["ETAT"];
 
-    // Validate inputs
-    $input_validation = validateInputs($idCours, $dateLimite, $_FILES, $commentaire, $etat);
+function voirNote($reponse) {
+	$_SESSION["description"] = null;
 
-    if (!empty($idCours) && !empty($dateLimite) && !empty($commentaire) && $input_validation) {
-        $uploadDir = 'uploads/'; // Ensure this directory exists and has the correct permissions
-        $fileTmpPath = $_FILES["fileToUpload"]["tmp_name"];
-        $fileName = $_FILES["fileToUpload"]["name"];
-        $uploadFilePath = $uploadDir . $fileName;
+	$key="AIzaSyBF0f-tIrB36bqJ6tml5yRp39pFMFKevWw";
+	$url = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=$key";
 
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($uploadFilePath, PATHINFO_EXTENSION));
+	$text =  "Reponse: $reponse" . "\n Evaluez cette réponse / 20 ne soyez pas indulgents et donnez une petite description";
 
-        // Check if the file is an image
-        $check = getimagesize($fileTmpPath);
-        if ($check !== false) {
-            echo "File is an image: " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
+	$data = array(
+        'contents' => array(
+            array(
+                'parts' => array(
+                    array(
+                        'text' => $text
+                    )
+                )
+            )
+        )
+    );
 
-        if ($uploadOk && move_uploaded_file($fileTmpPath, $uploadFilePath)) {
-            $devoir = new Devoir(
-                depot_id: null, // Leave as is if auto-incremented
-                cours_id: $idCours,
-                date_limite: $dateLimite,
-                fichier: $uploadFilePath, // Store the path to the uploaded file
-                commentaire: $commentaire,
-                etat: $etat
-            );
+	// Convert data to JSON format
+	$jsonData = json_encode($data);
 
-            $devoirC->addDevoir($devoir);
+	// Initialize cURL session
+	$ch = curl_init();
 
-            echo "Devoir ajouté avec succès: $uploadFilePath";
-        } else {
-            echo "Erreur: Échec du déplacement du fichier.";
-        }
-    } else {
-        ?>
-		<script>alert('Les données sont erronées')</script>
-		<?php
-    }
+	// Set cURL options
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json'
+	));
+
+	// Execute cURL request
+	$response = curl_exec($ch);
+
+
+	if ($response === false) {
+		echo 'Error: ' . curl_error($ch);
+	}
+
+	else {
+		// Decode JSON response
+		$responseData = json_decode($response, true);
+		
+		$_SESSION["description"] = $responseData["candidates"][0]["content"]["parts"][0]["text"];
+	}
+
+	// Close cURL session
+	curl_close($ch);
 }
+
+if (isset($_POST["voir_note"]) and isset($_POST["reponse"])) {
+	voirNote($_POST["reponse"]);
+}
+
 ?>
-
-
-
-<!-- Affichage d'erreur -->
-<?php if (!empty($error)): ?>
-    <script>alert("<?php echo $error; ?>")</script>
-<?php endif; ?>
-
 
 
 <!DOCTYPE html>
@@ -152,7 +150,7 @@ if (isset($_POST["COURS_ID"]) &&
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
-							<li><a href="index.html">Home</a></li>
+							<li><a href="../index.html">Home</a></li>
 							<li>Contact</li>
 						</ul>
 						<h1 class="white-text">Afficher les rendus par matiere</h1>
@@ -163,42 +161,61 @@ if (isset($_POST["COURS_ID"]) &&
 
 		</div>
 		<!-- /Hero-area -->
-			<h2>Ajouter un rendu</h2>
-		<form id="addAssignmentForm" action="" method="POST" enctype="multipart/form-data">
-			
-			<div>
-				<label for="id_cours">ID du cours:</label>
-				<input type="text" id="id_cours" name="COURS_ID" required>
-			</div>
-			<div>
-				<label for="date_limite">Date limite:</label>
-				<input type="date" id="date_limite" name="DATE_LIMITE" required>
-			</div>
 
-			<div>
-				<label for="fileToUpload">Select image to upload:</label>
-  				<input type="file" name="fileToUpload" id="fileToUpload">
+          <table border="1" align="center" width="60%">
+    <tr>
+        <th>Note</th>
+        <th>Commentaire</th>
+        <th>Réponse Étudiant</th>
+    </tr>
+    <?php
+    foreach ($list as $evaluation) {
+    ?>
+        <tr>
+            <td><?= $evaluation['NOTE']; ?></td>
+            <td><?= $evaluation['COMMENTAIRE']; ?></td>
+            <td><?= $evaluation['REPONSE_ETUD']; ?></td>
+			<?php
+				if (empty($evaluation["REPONSE_ETUD"])) {
+					?>
+					    <td align="center">
+                		<form method="POST" action="miseajourevaluation.php">
+                		<input type="submit" name="update" value="Update">
+                    	<input type="hidden" value="<?= $evaluation['ID_EVALUATION']; ?>" name="ID_EVALUATION">
+                		</form>
+            			</td>
+					<?php
+				}
+
+				if (empty($evaluation["NOTE"]) and !empty($evaluation["REPONSE_ETUD"])) {
+					?>
+						<td align="center">
+                		<form method="POST" action="">
+							<input type="hidden" name="voir_note">
+							<input type="hidden" name="reponse" value="<?= $evaluation['REPONSE_ETUD']; ?>">
+							<button type="submit">Voir Note</button>
+                		</form>
+            			</td>
+					<?php
+
+				}
+			?>
+        </tr>
+    <?php
+    }
+    ?>
+</table>
+
+	<?php
+		if (isset($_SESSION["description"])) {
+			?>
+			<div class="reponseEvalBard">
+				<pre> <?= $_SESSION["description"]; ?> </pre>
 			</div>
+			<?php
+		}
+	?>
 
-			<div>
-				<label for="commentaire">Commentaire:</label>
-				<textarea id="commentaire" name="COMMENTAIRE"></textarea>
-			</div>
-
-			<div>
-				<label for="etat">État:</label>
-				<select id="etat" name="ETAT" required>
-					<option value="0">En attente</option>
-					<option value="1">Soumis</option>
-					<option value="2">Validé</option>
-					<option value="3">Rejeté</option>
-				</select>
-			</div>
-			<button type="submit" id="boutonAjouterRendu">Ajouter le rendu</button>
-		</form>
-
-
-		
     
 		<!-- Footer -->
 		<footer id="footer" class="section">
@@ -248,38 +265,11 @@ if (isset($_POST["COURS_ID"]) &&
 
 		<!-- jQuery Plugins -->
 		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 		<script type="text/javascript" src="js/google-map.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
-		<!--<script src="js/script.js"></script>-->
-		
+		<script src="js/script.js"></script>
 
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-

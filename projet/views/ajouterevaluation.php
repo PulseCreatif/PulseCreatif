@@ -1,74 +1,67 @@
 <?php
 
-include __DIR__.'/../controllers/DevoirC.php';
-include __DIR__.'/../models/devoir.php';
+include __DIR__.'/../controllers/EvaluationC.php';
+include __DIR__.'/../models/evaluation.php';
 require_once __DIR__."/validation.php";
 
-$devoirC = new DevoirController();
+//require_once __DIR__."/validation.php";
 
-if (isset($_POST["COURS_ID"]) &&
-    isset($_POST["DATE_LIMITE"]) &&
+$input_validation = true;
+
+// Instanciation du contrôleur
+$evaluationC = new EvaluationController();
+$evaluation = null;
+
+// Vérification de la présence des données nécessaires
+if (isset($_POST["ID_DEPOT"]) &&
+    isset($_POST["ID_ENSEIGNANT"]) &&
+    isset($_POST["NOTE"]) &&
     isset($_POST["COMMENTAIRE"]) &&
-    isset($_POST["ETAT"]) &&
-    isset($_FILES["fileToUpload"]["name"])) {
+    isset($_POST["REPONSE_ETUD"])) {
+    
+		$id_depot=$_POST["ID_DEPOT"];
+		$id_enseignant=$_POST["ID_ENSEIGNANT"];
+		$note=$_POST["NOTE"];
+		$commentaire=$_POST["COMMENTAIRE"];
+		$reponse_etud=$_POST["REPONSE_ETUD"];
 
-    $idCours = $_POST["COURS_ID"];
-    $dateLimite = $_POST["DATE_LIMITE"];
-    $commentaire = $_POST["COMMENTAIRE"];
-    $etat = (int) $_POST["ETAT"];
+		$input_validation=validateEvaluation($id_depot,$id_enseignant,$note,$commentaire,$reponse_etud);
 
-    // Validate inputs
-    $input_validation = validateInputs($idCours, $dateLimite, $_FILES, $commentaire, $etat);
+    if (!empty($id_depot) && !empty($id_enseignant) && !empty($note) && !empty($commentaire) && !empty($reponse_etud) && $input_validation) {
+        // Récupération des données du formulaire
+        $ID_DEPOT = $_POST["ID_DEPOT"];
+        $ID_ENSEIGNANT = $_POST["ID_ENSEIGNANT"];
+        $NOTE = $_POST["NOTE"];
+        $COMMENTAIRE = $_POST["COMMENTAIRE"];
+        $REPONSE_ETUD = $_POST["REPONSE_ETUD"];
 
-    if (!empty($idCours) && !empty($dateLimite) && !empty($commentaire) && $input_validation) {
-        $uploadDir = 'uploads/'; // Ensure this directory exists and has the correct permissions
-        $fileTmpPath = $_FILES["fileToUpload"]["tmp_name"];
-        $fileName = $_FILES["fileToUpload"]["name"];
-        $uploadFilePath = $uploadDir . $fileName;
+        // Création d'un nouvel objet Evaluation
+        $evaluation = new Evaluation(
+            id_evaluation:null, // Laissez l'ID à null s'il est auto-incrémenté dans la base de données
+            id_depot:$ID_DEPOT,
+            id_enseignant:$ID_ENSEIGNANT,
+            note:$NOTE,
+            commentaire:$COMMENTAIRE,
+            reponse_etud:$REPONSE_ETUD
+        );
 
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($uploadFilePath, PATHINFO_EXTENSION));
-
-        // Check if the file is an image
-        $check = getimagesize($fileTmpPath);
-        if ($check !== false) {
-            echo "File is an image: " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
-
-        if ($uploadOk && move_uploaded_file($fileTmpPath, $uploadFilePath)) {
-            $devoir = new Devoir(
-                depot_id: null, // Leave as is if auto-incremented
-                cours_id: $idCours,
-                date_limite: $dateLimite,
-                fichier: $uploadFilePath, // Store the path to the uploaded file
-                commentaire: $commentaire,
-                etat: $etat
-            );
-
-            $devoirC->addDevoir($devoir);
-
-            echo "Devoir ajouté avec succès: $uploadFilePath";
-        } else {
-            echo "Erreur: Échec du déplacement du fichier.";
-        }
-    } else {
-        ?>
-		<script>alert('Les données sont erronées')</script>
-		<?php
+        // Ajout de l'évaluation à la base de données
+        $evaluationC->addEvaluation($evaluation);
+        // Redirection vers une autre page si nécessaire
+        // header("Location: pageDeRedirection.php");
+        // exit();
     }
+	else {
+		echo "<script>alert('Les données sont erronées')</script>";
+	}
 }
 ?>
 
 
-
 <!-- Affichage d'erreur -->
-<?php if (!empty($error)): ?>
+<?php if (!empty($error)) { ?>
     <script>alert("<?php echo $error; ?>")</script>
-<?php endif; ?>
+<?php } ?>
 
 
 
@@ -163,39 +156,36 @@ if (isset($_POST["COURS_ID"]) &&
 
 		</div>
 		<!-- /Hero-area -->
-			<h2>Ajouter un rendu</h2>
-		<form id="addAssignmentForm" action="" method="POST" enctype="multipart/form-data">
-			
-			<div>
-				<label for="id_cours">ID du cours:</label>
-				<input type="text" id="id_cours" name="COURS_ID" required>
-			</div>
-			<div>
-				<label for="date_limite">Date limite:</label>
-				<input type="date" id="date_limite" name="DATE_LIMITE" required>
-			</div>
+        <h2>Ajouter une évaluation</h2>
+<form id="addEvaluationForm" action="ajouterevaluation.php" method="POST">
 
-			<div>
-				<label for="fileToUpload">Select image to upload:</label>
-  				<input type="file" name="fileToUpload" id="fileToUpload">
-			</div>
+    <div>
+        <label for="id_evaluation">ID de l'évaluation :</label>
+        <input type="text" id="id_evaluation" name="ID_EVALUATION" required>
+    </div>
+    <div>
+        <label for="id_depot">ID du dépôt :</label>
+        <input type="text" id="id_depot" name="ID_DEPOT" required>
+    </div>
+    <div>
+        <label for="id_enseignant">ID de l'enseignant :</label>
+        <input type="text" id="id_enseignant" name="ID_ENSEIGNANT" required>
+    </div>
+    <div>
+        <label for="note">Note :</label>
+        <input type="number" id="note" name="NOTE" step="0.01" min="0" required>
+    </div>
+    <div>
+        <label for="commentaire">Commentaire :</label>
+        <textarea id="commentaire" name="COMMENTAIRE"></textarea>
+    </div>
+    <div>
+        <label for="reponse_etud">Réponse de l'étudiant :</label>
+        <textarea id="reponse_etud" name="REPONSE_ETUD"></textarea>
+    </div>
+    <button type="submit" id="boutonAjouterEvaluation">Ajouter l'évaluation</button>
+</form>
 
-			<div>
-				<label for="commentaire">Commentaire:</label>
-				<textarea id="commentaire" name="COMMENTAIRE"></textarea>
-			</div>
-
-			<div>
-				<label for="etat">État:</label>
-				<select id="etat" name="ETAT" required>
-					<option value="0">En attente</option>
-					<option value="1">Soumis</option>
-					<option value="2">Validé</option>
-					<option value="3">Rejeté</option>
-				</select>
-			</div>
-			<button type="submit" id="boutonAjouterRendu">Ajouter le rendu</button>
-		</form>
 
 
 		
@@ -252,7 +242,7 @@ if (isset($_POST["COURS_ID"]) &&
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 		<script type="text/javascript" src="js/google-map.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
-		<!--<script src="js/script.js"></script>-->
+		<script src="js/script.js"></script>
 		
 
 	</body>

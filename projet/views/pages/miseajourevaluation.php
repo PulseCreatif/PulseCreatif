@@ -1,61 +1,66 @@
 <?php
 
-require_once(__DIR__."/../../controllers/DevoirC.php");
-require_once(__DIR__."/../../models/devoir.php");
+require_once(__DIR__."/../../controllers/EvaluationC.php");
+require_once(__DIR__."/../../models/evaluation.php");
 require_once(__DIR__."/../validation.php");
 
 $error = "";
 
-// create devoir
-$devoir = null;
+// create evaluation instance
+$evaluation = null;
 
 // create an instance of the controller
-$devoirC = new DevoirController();
-
-$input_validation = true;
+$evaluationC = new EvaluationController();
 
 if (
-    isset($_POST["DEPOT_ID"]) &&
-    isset($_POST["COURS_ID"]) &&
-    isset($_POST["DATE_LIMITE"]) &&
-    isset($_POST["FICHIER"]) &&
+    isset($_POST["ID_EVALUATION"]) &&
+    isset($_POST["ID_DEPOT"]) &&
+    isset($_POST["ID_ENSEIGNANT"]) &&
+    isset($_POST["NOTE"]) &&
     isset($_POST["COMMENTAIRE"]) &&
-    isset($_POST["ETAT"])) {
-  
-      $idCours = $_POST["COURS_ID"];
-      $dateLimite = $_POST["DATE_LIMITE"];
-      $fichier = $_POST["FICHIER"];
-      $commentaire = $_POST["COMMENTAIRE"];
-      $etat = $_POST["ETAT"];
+    isset($_POST["REPONSE_ETUD"])
+) {
+      $id_depot=$_POST["ID_DEPOT"];
+      $id_enseignant=$_POST["ID_ENSEIGNANT"];
+      $note=$_POST["NOTE"];
+      $commentaire=$_POST["COMMENTAIRE"];
+      $reponse_etud=$_POST["REPONSE_ETUD"];
+      
 
-  $input_validation = validateInputs($idCours, $dateLimite, $fichier, $commentaire, $etat);
+      $input_validation=validateEvaluation($id_depot,$id_enseignant,$note,$commentaire,$reponse_etud);
+    // It's not recommended to check for empty fields like this after they are set; instead, validate each field separately.
+    if (!empty($id_depot) && !empty($id_enseignant) && !empty($note) && !empty($commentaire) && !empty($reponse_etud) && $input_validation)
+     {
+        $ID_DEPOT = $_POST["ID_DEPOT"];
+        $ID_ENSEIGNANT = $_POST["ID_ENSEIGNANT"];
+        $NOTE = $_POST["NOTE"];
+        $COMMENTAIRE = $_POST["COMMENTAIRE"];
+        $REPONSE_ETUD = $_POST["REPONSE_ETUD"];
 
 
-    if (!empty($idCours) && !empty($fichier) && !empty($dateLimite) && !empty($commentaire) && $input_validation) {
-      $COURS_ID = $_POST["COURS_ID"];
-      $DATE_LIMITE = $_POST["DATE_LIMITE"];
-      $COMMENTAIRE = $_POST["COMMENTAIRE"];
-      $ETAT = $_POST["ETAT"];
-      $FICHIER = $_POST["FICHIER"];
 
-      $devoir = new Devoir(
-          depot_id:$_POST['DEPOT_ID'],
-          cours_id:$_POST['COURS_ID'],
-          date_limite:$_POST['DATE_LIMITE'],
-          fichier:$_POST['FICHIER'],
-          commentaire:$_POST["COMMENTAIRE"],
-          etat:$_POST["ETAT"]
-      );
-      $devoirC->updateDevoir($devoir, $_POST["DEPOT_ID"]);
-      header("Location:tables.php");
-  }
-  else {
-    echo "<script>alert('Les données sont erronées')</script>";
-    echo "<script>window.location.href = 'tables.php'</script>";
-  }
-}
+
+        $evaluation = new Evaluation(
+            id_evaluation:$_POST['ID_EVALUATION'],
+            id_depot:$_POST['ID_DEPOT'],
+            id_enseignant:$_POST['ID_ENSEIGNANT'],
+            note:$_POST['NOTE'],
+            commentaire:$_POST["COMMENTAIRE"],
+            reponse_etud:$_POST["REPONSE_ETUD"]
+        );
+        $evaluationC->updateEvaluation($evaluation, $_POST["ID_EVALUATION"]);
+        header("Location:evaluation.php");
+        exit();
+    } 
+      else {
+        echo "<script>alert('Les données sont erronées')</script>";
+        echo "<script>window.location.href = 'evaluation.php'</script>";
+      }
+    }
+
 
 ?>
+
 
 
 <!DOCTYPE html>
@@ -203,58 +208,50 @@ if (
   </div>
 
   <?php
-    if (isset($_POST['DEPOT_ID'])) {
-        $devoir = $devoirC->showDevoir($_POST['DEPOT_ID']);
-    
-    ?>
+if (isset($_POST['ID_EVALUATION'])) {
+    // Remplacer par la méthode appropriée pour récupérer une évaluation.
+    $evaluation = $evaluationC->showEvaluation($_POST['ID_EVALUATION']);
+?>
     <form action="" method="POST">
         <table border="1" align="center">
             <tr>
                 <td>
-                    <label for="DEPOT_ID">DEPOT_ID:
-                    </label>
+                    <label for="ID_EVALUATION">ID Évaluation :</label>
                 </td>
-                <td><input type="text" name="DEPOT_ID" id="DEPOT_ID" value="<?php echo $devoir['DEPOT_ID']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_EVALUATION" id="ID_EVALUATION" value="<?php echo $evaluation['ID_EVALUATION']; ?>" readonly></td>
             </tr>
             <tr>
                 <td>
-                    <label for="COURS_ID">COURS_ID:
-                    </label>
+                    <label for="ID_DEPOT">ID Dépôt :</label>
                 </td>
-                <td><input type="text" name="COURS_ID" id="COURS_ID" value="<?php echo $devoir['COURS_ID']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_DEPOT" id="ID_DEPOT" value="<?php echo $evaluation['ID_DEPOT']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="DATE_LIMITE">DATE_LIMITE:
-                    </label>
+                    <label for="ID_ENSEIGNANT">ID Enseignant :</label>
                 </td>
-                <td><input type="date" name="DATE_LIMITE" id="DATE_LIMITE" value="<?php echo $devoir['DATE_LIMITE']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_ENSEIGNANT" id="ID_ENSEIGNANT" value="<?php echo $evaluation['ID_ENSEIGNANT']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="FICHIER">FICHIER:
-                    </label>
+                    <label for="NOTE">Note :</label>
                 </td>
-                <td>
-                    <input type="text" name="FICHIER" value="<?php echo $devoir['FICHIER']; ?>" id="FICHIER">
-                </td>
+                <td><input type="number" step="0.01" name="NOTE" id="NOTE" value="<?php echo $evaluation['NOTE']; ?>" maxlength="5"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="COMMENTAIRE">COMMENTAIRE:
-                    </label>
+                    <label for="COMMENTAIRE">Commentaire :</label>
                 </td>
                 <td>
-                    <input type="text" name="COMMENTAIRE" id="COMMENTAIRE" value="<?php echo $devoir["COMMENTAIRE"]; ?>">
+                    <input type="text" name="COMMENTAIRE" id="COMMENTAIRE" value="<?php echo $evaluation["COMMENTAIRE"]; ?>">
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="ETAT">ETAT:
-                    </label>
+                    <label for="REPONSE_ETUD">Réponse Étudiant :</label>
                 </td>
                 <td>
-                    <input type="text" name="ETAT" id="ETAT" value="<?php echo $devoir["ETAT"]; ?>">
+                    <input type="text" name="REPONSE_ETUD" id="REPONSE_ETUD" value="<?php echo $evaluation["REPONSE_ETUD"]; ?>">
                 </td>
             </tr>
             <tr>
@@ -271,6 +268,7 @@ if (
 <?php
 }
 ?>
+
 
 
   <!--   Core JS Files   -->

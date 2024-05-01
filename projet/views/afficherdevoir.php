@@ -141,9 +141,7 @@ $list = $DevoirC->listDevoirs();
                     </form>
 		-->
                 </td>
-                <td>
-                	<a href="supprimerdevoir.php?id=<?php echo $devoir['DEPOT_ID']; ?>">Delete</a>
-                </td>
+
             </tr>
         <?php
         }

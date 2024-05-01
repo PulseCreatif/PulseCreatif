@@ -7,8 +7,8 @@ class config {
         }
         // Données connextion
         $servername = "localhost";
-        $username = "souhaila";
-        $password = "souhaila";
+        $username = "root";
+        $password = "";
         $dbname = "myapp";
 
         try {

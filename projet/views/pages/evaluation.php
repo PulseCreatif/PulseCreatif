@@ -1,60 +1,10 @@
 <?php
 
-require_once(__DIR__."/../../controllers/DevoirC.php");
-require_once(__DIR__."/../../models/devoir.php");
-require_once(__DIR__."/../validation.php");
+include __DIR__.'/../../controllers/EvaluationC.php';
+include __DIR__.'/../../models/evaluation.php';
 
-$error = "";
-
-// create devoir
-$devoir = null;
-
-// create an instance of the controller
-$devoirC = new DevoirController();
-
-$input_validation = true;
-
-if (
-    isset($_POST["DEPOT_ID"]) &&
-    isset($_POST["COURS_ID"]) &&
-    isset($_POST["DATE_LIMITE"]) &&
-    isset($_POST["FICHIER"]) &&
-    isset($_POST["COMMENTAIRE"]) &&
-    isset($_POST["ETAT"])) {
-  
-      $idCours = $_POST["COURS_ID"];
-      $dateLimite = $_POST["DATE_LIMITE"];
-      $fichier = $_POST["FICHIER"];
-      $commentaire = $_POST["COMMENTAIRE"];
-      $etat = $_POST["ETAT"];
-
-  $input_validation = validateInputs($idCours, $dateLimite, $fichier, $commentaire, $etat);
-
-
-    if (!empty($idCours) && !empty($fichier) && !empty($dateLimite) && !empty($commentaire) && $input_validation) {
-      $COURS_ID = $_POST["COURS_ID"];
-      $DATE_LIMITE = $_POST["DATE_LIMITE"];
-      $COMMENTAIRE = $_POST["COMMENTAIRE"];
-      $ETAT = $_POST["ETAT"];
-      $FICHIER = $_POST["FICHIER"];
-
-      $devoir = new Devoir(
-          depot_id:$_POST['DEPOT_ID'],
-          cours_id:$_POST['COURS_ID'],
-          date_limite:$_POST['DATE_LIMITE'],
-          fichier:$_POST['FICHIER'],
-          commentaire:$_POST["COMMENTAIRE"],
-          etat:$_POST["ETAT"]
-      );
-      $devoirC->updateDevoir($devoir, $_POST["DEPOT_ID"]);
-      header("Location:tables.php");
-  }
-  else {
-    echo "<script>alert('Les données sont erronées')</script>";
-    echo "<script>window.location.href = 'tables.php'</script>";
-  }
-}
-
+$EvaluationC = new EvaluationController();
+$list = $EvaluationC->listEvaluations();
 ?>
 
 
@@ -66,6 +16,7 @@ if (
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="stylesheet" href="../css/style.css">
   <title>
     Dashboard admin
   </title>
@@ -93,6 +44,7 @@ if (
         <span class="ms-1 font-weight-bold">PulseCreatif</span>
       </a>
     </div>
+    
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
@@ -113,7 +65,32 @@ if (
                 </g>
               </svg>
             </div>
-            <span class="nav-link-text ms-1">Tables</span>
+            <span class="nav-link-text ms-1">Dashboard 1</span>
+          </a>
+        </li>
+    </div>
+    
+
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link  active" href="evaluation.php">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>office</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g id="office" transform="translate(153.000000, 2.000000)">
+                        <path class="color-background opacity-6" d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z"></path>
+                        <path class="color-background" d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard2</span>
           </a>
         </li>
     </div>
@@ -202,75 +179,80 @@ if (
     </div>
   </div>
 
-  <?php
-    if (isset($_POST['DEPOT_ID'])) {
-        $devoir = $devoirC->showDevoir($_POST['DEPOT_ID']);
-    
+  <!--
+<div class="user-table"> 
+  <table border="1" align="center" width="60%">
+     <tr>
+        <th>Id</th>
+        <th>Nom</th>
+        <th>Telephone</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Password</th>
+    </tr>
+    <?php
+    foreach ($list as $evaluation) {
     ?>
-    <form action="" method="POST">
-        <table border="1" align="center">
-            <tr>
-                <td>
-                    <label for="DEPOT_ID">DEPOT_ID:
-                    </label>
-                </td>
-                <td><input type="text" name="DEPOT_ID" id="DEPOT_ID" value="<?php echo $devoir['DEPOT_ID']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="COURS_ID">COURS_ID:
-                    </label>
-                </td>
-                <td><input type="text" name="COURS_ID" id="COURS_ID" value="<?php echo $devoir['COURS_ID']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="DATE_LIMITE">DATE_LIMITE:
-                    </label>
-                </td>
-                <td><input type="date" name="DATE_LIMITE" id="DATE_LIMITE" value="<?php echo $devoir['DATE_LIMITE']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="FICHIER">FICHIER:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="FICHIER" value="<?php echo $devoir['FICHIER']; ?>" id="FICHIER">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="COMMENTAIRE">COMMENTAIRE:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="COMMENTAIRE" id="COMMENTAIRE" value="<?php echo $devoir["COMMENTAIRE"]; ?>">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ETAT">ETAT:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="ETAT" id="ETAT" value="<?php echo $devoir["ETAT"]; ?>">
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Update">
-                </td>
-                <td>
-                    <input type="reset" value="Reset">
-                </td>
-            </tr>
-        </table>
-    </form>
+    <tr>
+        <td><?= $evaluation['ID_EVALUATION']; ?></td>
+        <td><?= $evaluation['ID_DEPOT']; ?></td>
+        <td><?= $evaluation['ID_ENSEIGNANT']; ?></td>
+        <td><?= $evaluation['NOTE']; ?></td>
+        <td><?= $evaluation['COMMENTAIRE']; ?></td>
+        <td><?= $evaluation['REPONSE_ETUD']; ?></td>
+        
+        <td align="center">
+            <form method="POST" action="updateEvaluation.php">
+                <input type="submit" name="update" value="Update">
+                <input type="hidden" value="<?= $evaluation['ID_EVALUATION']; ?>" name="id">
+            </form>
+        </td>
+        <td>
+            <a href="../deleteEvaluation.php?id=<?= $evaluation['ID_EVALUATION']; ?>">Delete</a>
+        </td>
+    </tr>
+    
 <?php
 }
 ?>
+
+  </table>
+</div>
+-->
+
+
+<table border="1" align="center" width="60%">
+    <tr>
+        <th>Id Évaluation</th>
+        <th>Id Dépôt</th>
+        <th>Id Enseignant</th>
+        <th>Note</th>
+        <th>Commentaire</th>
+        <th>Réponse Étudiant</th>
+        <th>Actions</th>
+    </tr>
+    <?php
+    foreach ($list as $evaluation) {
+    ?>
+        <tr>
+            <td><?= $evaluation['ID_EVALUATION']; ?></td>
+            <td><?= $evaluation['ID_DEPOT']; ?></td>
+            <td><?= $evaluation['ID_ENSEIGNANT']; ?></td>
+            <td><?= $evaluation['NOTE']; ?></td>
+            <td><?= $evaluation['COMMENTAIRE']; ?></td>
+            <td><?= $evaluation['REPONSE_ETUD']; ?></td>
+            <td align="center">
+                <form method="POST" action="miseajourevaluation.php">
+                    <input type="submit" name="update" value="Update">
+                    <input type="hidden" value="<?= $evaluation['ID_EVALUATION']; ?>" name="ID_EVALUATION">
+                </form>
+                <a href="../supprimerevaluation.php?id=<?= $evaluation['ID_EVALUATION']; ?>">Delete</a>
+            </td>
+        </tr>
+    <?php
+    }
+    ?>
+</table>
 
 
   <!--   Core JS Files   -->
@@ -292,4 +274,5 @@ if (
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
 </body>
+
 </html>
