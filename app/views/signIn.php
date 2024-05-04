@@ -24,7 +24,7 @@ else if ($_SESSION["user_role"] == 3) {
     header("Location:espProf.php");
 }
 else if ($_SESSION["user_role"] === 0) {
-    header("Location:pages/tables.php");
+    header("Location:pages/dashboardUser.php");
 }
 else if (isset($_POST["name"]) and isset($_POST["password"])) {
     $input_validation = validate_form_input_login($_POST["name"], $_POST["password"]);
@@ -56,20 +56,17 @@ if (!$input_validation) {
 
 
 if ($user and $user["USER_ROLE"] == "0") {
-    header("Location:pages/tables.php");
+    header("Location:pages/dashboardUser.php");
 }
 
 if ($user and $user["USER_ROLE"] == "1") {
     header("Location:espEtud.php");
-    //echo "<script>window.location.href = 'espEtud.php'</script>";
 }
 else if ($user and $user["USER_ROLE"] == "2") {
     header("Location:espEtud_Prem.php");
-    //echo "<script>window.location.href = 'espEtud.php'</script>";
 }
 else if ($user and $user["USER_ROLE"] == "3") {
     header("Location:espProf.php");
-    //echo "<script>window.location.href = 'espProf.php'</script>";
 }
 
 ?>

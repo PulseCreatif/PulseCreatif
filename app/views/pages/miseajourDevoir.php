@@ -1,56 +1,64 @@
 <?php
-session_start();
 
-require_once(__DIR__.'/../../../app/controllers/UserC.php');
-require_once(__DIR__.'/../../../app/models/User.php');
-require_once(__DIR__.'/../../utils.php');
-
-if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
-  http_response_code(403);
-  header("Location:../index.php");
-  exit();
-}
+require_once(__DIR__."/../../controllers/DevoirC.php");
+require_once(__DIR__."/../../models/devoir.php");
+require_once(__DIR__."/../validation.php");
 
 $error = "";
 
-// create user
-$user = null;
+// create devoir
+$devoir = null;
+
+// create an instance of the controller
+$devoirC = new DevoirController();
 
 $input_validation = true;
 
-// create an instance of the controller
-$userC = new UserController();
-
 if (
-    isset($_POST["id"]) &&
-    isset($_POST["name"]) &&
-    isset($_POST["email"]) &&
-    isset($_POST["phone"]) &&
-    isset($_POST["role"]) &&
-    isset($_POST["password"])
-) {
-  $input_validation = validate_form_input_update($_POST["name"],
-  $_POST["phone"], $_POST["email"], $_POST["role"], $_POST["id"]);
-  if ($input_validation) {
-      $user = new User(
-          id:$_POST['id'],
-          name:$_POST['name'],
-          email:$_POST['email'],  
-          phone:$_POST['phone'],
-          role:$_POST["role"],
-          password:$_POST["password"]
+    isset($_POST["DEPOT_ID"]) &&
+    isset($_POST["COURS_ID"]) &&
+    isset($_POST["DATE_LIMITE"]) &&
+    isset($_POST["FICHIER"]) &&
+    isset($_POST["COMMENTAIRE"]) &&
+    isset($_POST["ETAT"])) {
+  
+      $idCours = $_POST["COURS_ID"];
+      $dateLimite = $_POST["DATE_LIMITE"];
+      $fichier = $_POST["FICHIER"];
+      $commentaire = $_POST["COMMENTAIRE"];
+      $etat = $_POST["ETAT"];
+
+  $input_validation = validateInputs($idCours, $dateLimite, $fichier, $commentaire, $etat);
+
+  var_dump($input_validation);
+
+
+    if (!empty($idCours) && !empty($fichier) && !empty($dateLimite) && !empty($commentaire) && $input_validation) {
+      $COURS_ID = $_POST["COURS_ID"];
+      $DATE_LIMITE = $_POST["DATE_LIMITE"];
+      $COMMENTAIRE = $_POST["COMMENTAIRE"];
+      $ETAT = $_POST["ETAT"];
+      $FICHIER = $_POST["FICHIER"];
+
+      $devoir = new Devoir(
+          depot_id:$_POST['DEPOT_ID'],
+          cours_id:$_POST['COURS_ID'],
+          date_limite:$_POST['DATE_LIMITE'],
+          fichier:$_POST['FICHIER'],
+          commentaire:$_POST["COMMENTAIRE"],
+          etat:$_POST["ETAT"]
       );
-      $userC->updateUser($user, $_POST["id"]);
-      header("Location:dashboardUser.php");
+      $devoirC->updateDevoir($devoir, $_POST["DEPOT_ID"]);
+      header("Location:dashboardDevoir.php");
+  }
+  else {
+    echo "<script>alert('Les données sont erronées')</script>";
+    echo "<script>window.location.href = 'dashboardDevoir.php'</script>";
   }
 }
-if (!$input_validation) {
-    ?>
-      <script>alert("Le nom d'utilisateur doit uniquement contenir des caractères simple\nLe mot de passe doit être entre 4 et 16 caractères et contenir au moins une lette majuscule \n L'adresse mail doit être valide \n Le numéro de téléphone doit contenir exactement 8 chiffres \n Le rôle est un entier entre 0 et 3 \n l'id doit être un entier")</script>
-      <script>window.location.href = "dashboardUser.php"</script>
-    <?php
-}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +99,7 @@ if (!$input_validation) {
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link  active" href="dashboardUser.php">
+          <a class="nav-link  active" href="dashboardDevoir.php">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>office</title>
@@ -136,7 +144,6 @@ if (!$input_validation) {
                 <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
               </a>
             </li>
-            <li><a href="disconnect.php">Se déconnecter</a></li>
         </div>
       </div>
     </nav>
@@ -198,57 +205,58 @@ if (!$input_validation) {
   </div>
 
   <?php
-    if (isset($_POST['id'])) {
-        $user = $userC->showUser($_POST['id']);
+    if (isset($_POST['DEPOT_ID'])) {
+        $devoir = $devoirC->showDevoir($_POST['DEPOT_ID']);
+    
     ?>
     <form action="" method="POST">
         <table border="1" align="center">
             <tr>
                 <td>
-                    <label for="id">ID:
+                    <label for="DEPOT_ID">DEPOT_ID:
                     </label>
                 </td>
-                <td><input type="text" name="id" id="id" value="<?php echo $user['USER_ID']; ?>" maxlength="20"></td>
+                <td><input type="text" name="DEPOT_ID" id="DEPOT_ID" value="<?php echo $devoir['DEPOT_ID']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="name">Nom d'utilisateur:
+                    <label for="COURS_ID">COURS_ID:
                     </label>
                 </td>
-                <td><input type="text" name="name" id="name" value="<?php echo $user['USER_NAME']; ?>" maxlength="20"></td>
+                <td><input type="text" name="COURS_ID" id="COURS_ID" value="<?php echo $devoir['COURS_ID']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="phone">Telephone:
+                    <label for="DATE_LIMITE">DATE_LIMITE:
                     </label>
                 </td>
-                <td><input type="tel" name="phone" id="phone" value="<?php echo $user['USER_PHONENUM']; ?>" maxlength="20"></td>
+                <td><input type="date" name="DATE_LIMITE" id="DATE_LIMITE" value="<?php echo $devoir['DATE_LIMITE']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="email">Email:
+                    <label for="FICHIER">FICHIER:
                     </label>
                 </td>
                 <td>
-                    <input type="email" name="email" value="<?php echo $user['USER_EMAIL']; ?>" id="email">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="role">Role:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="role" id="role" value="<?php echo $user["USER_ROLE"]; ?>">
+                    <input type="text" name="FICHIER" value="<?php echo $devoir['FICHIER']; ?>" id="FICHIER">
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="password">Password:
+                    <label for="COMMENTAIRE">COMMENTAIRE:
                     </label>
                 </td>
                 <td>
-                    <input type="text" name="password" id="password" value="<?php echo $user["USER_PASSWORD"]; ?>">
+                    <input type="text" name="COMMENTAIRE" id="COMMENTAIRE" value="<?php echo $devoir["COMMENTAIRE"]; ?>">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ETAT">ETAT:
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="ETAT" id="ETAT" value="<?php echo $devoir["ETAT"]; ?>">
                 </td>
             </tr>
             <tr>

@@ -1,56 +1,67 @@
 <?php
-session_start();
 
-require_once(__DIR__.'/../../../app/controllers/UserC.php');
-require_once(__DIR__.'/../../../app/models/User.php');
-require_once(__DIR__.'/../../utils.php');
-
-if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
-  http_response_code(403);
-  header("Location:../index.php");
-  exit();
-}
+require_once(__DIR__."/../../controllers/EvaluationC.php");
+require_once(__DIR__."/../../models/evaluation.php");
+require_once(__DIR__."/../validation.php");
 
 $error = "";
 
-// create user
-$user = null;
-
-$input_validation = true;
+// create evaluation instance
+$evaluation = null;
 
 // create an instance of the controller
-$userC = new UserController();
+$evaluationC = new EvaluationController();
 
 if (
-    isset($_POST["id"]) &&
-    isset($_POST["name"]) &&
-    isset($_POST["email"]) &&
-    isset($_POST["phone"]) &&
-    isset($_POST["role"]) &&
-    isset($_POST["password"])
+    isset($_POST["ID_EVALUATION"]) &&
+    isset($_POST["ID_DEPOT"]) &&
+    isset($_POST["ID_ENSEIGNANT"]) &&
+    isset($_POST["NOTE"]) &&
+    isset($_POST["COMMENTAIRE"]) &&
+    isset($_POST["REPONSE_ETUD"])
 ) {
-  $input_validation = validate_form_input_update($_POST["name"],
-  $_POST["phone"], $_POST["email"], $_POST["role"], $_POST["id"]);
-  if ($input_validation) {
-      $user = new User(
-          id:$_POST['id'],
-          name:$_POST['name'],
-          email:$_POST['email'],  
-          phone:$_POST['phone'],
-          role:$_POST["role"],
-          password:$_POST["password"]
-      );
-      $userC->updateUser($user, $_POST["id"]);
-      header("Location:dashboardUser.php");
-  }
-}
-if (!$input_validation) {
-    ?>
-      <script>alert("Le nom d'utilisateur doit uniquement contenir des caractères simple\nLe mot de passe doit être entre 4 et 16 caractères et contenir au moins une lette majuscule \n L'adresse mail doit être valide \n Le numéro de téléphone doit contenir exactement 8 chiffres \n Le rôle est un entier entre 0 et 3 \n l'id doit être un entier")</script>
-      <script>window.location.href = "dashboardUser.php"</script>
-    <?php
-}
+      $id_depot=$_POST["ID_DEPOT"];
+      $id_enseignant=$_POST["ID_ENSEIGNANT"];
+      $note=$_POST["NOTE"];
+      $commentaire=$_POST["COMMENTAIRE"];
+      $reponse_etud=$_POST["REPONSE_ETUD"];
+      
+
+      $input_validation=validateEvaluation($id_depot,$id_enseignant,$note,$commentaire,$reponse_etud);
+    // It's not recommended to check for empty fields like this after they are set; instead, validate each field separately.
+    if (!empty($id_depot) && !empty($id_enseignant) && !empty($note) && !empty($commentaire) && !empty($reponse_etud) && $input_validation)
+     {
+        $ID_DEPOT = $_POST["ID_DEPOT"];
+        $ID_ENSEIGNANT = $_POST["ID_ENSEIGNANT"];
+        $NOTE = $_POST["NOTE"];
+        $COMMENTAIRE = $_POST["COMMENTAIRE"];
+        $REPONSE_ETUD = $_POST["REPONSE_ETUD"];
+
+
+
+
+        $evaluation = new Evaluation(
+            id_evaluation:$_POST['ID_EVALUATION'],
+            id_depot:$_POST['ID_DEPOT'],
+            id_enseignant:$_POST['ID_ENSEIGNANT'],
+            note:$_POST['NOTE'],
+            commentaire:$_POST["COMMENTAIRE"],
+            reponse_etud:$_POST["REPONSE_ETUD"]
+        );
+        $evaluationC->updateEvaluation($evaluation, $_POST["ID_EVALUATION"]);
+        header("Location:dashboardEvaluation.php");
+        exit();
+    } 
+      else {
+        echo "<script>alert('Les données sont erronées')</script>";
+        echo "<script>window.location.href = 'dashboardEvaluation.php'</script>";
+      }
+    }
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +102,7 @@ if (!$input_validation) {
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link  active" href="dashboardUser.php">
+          <a class="nav-link  active" href="tables.php">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>office</title>
@@ -136,7 +147,6 @@ if (!$input_validation) {
                 <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
               </a>
             </li>
-            <li><a href="disconnect.php">Se déconnecter</a></li>
         </div>
       </div>
     </nav>
@@ -198,57 +208,50 @@ if (!$input_validation) {
   </div>
 
   <?php
-    if (isset($_POST['id'])) {
-        $user = $userC->showUser($_POST['id']);
-    ?>
+if (isset($_POST['ID_EVALUATION'])) {
+    // Remplacer par la méthode appropriée pour récupérer une évaluation.
+    $evaluation = $evaluationC->showEvaluation($_POST['ID_EVALUATION']);
+?>
     <form action="" method="POST">
         <table border="1" align="center">
             <tr>
                 <td>
-                    <label for="id">ID:
-                    </label>
+                    <label for="ID_EVALUATION">ID Évaluation :</label>
                 </td>
-                <td><input type="text" name="id" id="id" value="<?php echo $user['USER_ID']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_EVALUATION" id="ID_EVALUATION" value="<?php echo $evaluation['ID_EVALUATION']; ?>" readonly></td>
             </tr>
             <tr>
                 <td>
-                    <label for="name">Nom d'utilisateur:
-                    </label>
+                    <label for="ID_DEPOT">ID Dépôt :</label>
                 </td>
-                <td><input type="text" name="name" id="name" value="<?php echo $user['USER_NAME']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_DEPOT" id="ID_DEPOT" value="<?php echo $evaluation['ID_DEPOT']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="phone">Telephone:
-                    </label>
+                    <label for="ID_ENSEIGNANT">ID Enseignant :</label>
                 </td>
-                <td><input type="tel" name="phone" id="phone" value="<?php echo $user['USER_PHONENUM']; ?>" maxlength="20"></td>
+                <td><input type="text" name="ID_ENSEIGNANT" id="ID_ENSEIGNANT" value="<?php echo $evaluation['ID_ENSEIGNANT']; ?>" maxlength="20"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="email">Email:
-                    </label>
+                    <label for="NOTE">Note :</label>
                 </td>
-                <td>
-                    <input type="email" name="email" value="<?php echo $user['USER_EMAIL']; ?>" id="email">
-                </td>
+                <td><input type="number" step="0.01" name="NOTE" id="NOTE" value="<?php echo $evaluation['NOTE']; ?>" maxlength="5"></td>
             </tr>
             <tr>
                 <td>
-                    <label for="role">Role:
-                    </label>
+                    <label for="COMMENTAIRE">Commentaire :</label>
                 </td>
                 <td>
-                    <input type="text" name="role" id="role" value="<?php echo $user["USER_ROLE"]; ?>">
+                    <input type="text" name="COMMENTAIRE" id="COMMENTAIRE" value="<?php echo $evaluation["COMMENTAIRE"]; ?>">
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="password">Password:
-                    </label>
+                    <label for="REPONSE_ETUD">Réponse Étudiant :</label>
                 </td>
                 <td>
-                    <input type="text" name="password" id="password" value="<?php echo $user["USER_PASSWORD"]; ?>">
+                    <input type="text" name="REPONSE_ETUD" id="REPONSE_ETUD" value="<?php echo $evaluation["REPONSE_ETUD"]; ?>">
                 </td>
             </tr>
             <tr>
@@ -265,6 +268,7 @@ if (!$input_validation) {
 <?php
 }
 ?>
+
 
 
   <!--   Core JS Files   -->

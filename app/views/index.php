@@ -11,7 +11,7 @@ require_once(__DIR__."/../utils.php");
 
 function select_esp_file() {
 	if ($_SESSION["user_role"] == 0) {
-		return "pages/tables.php";
+		return "pages/dashboardUser.php";
 	}
 	else if ($_SESSION["user_role"] == 1) {
 		return "espEtud.php";

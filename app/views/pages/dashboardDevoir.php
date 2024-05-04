@@ -1,56 +1,12 @@
 <?php
-session_start();
 
-require_once(__DIR__.'/../../../app/controllers/UserC.php');
-require_once(__DIR__.'/../../../app/models/User.php');
-require_once(__DIR__.'/../../utils.php');
+include __DIR__.'/../../controllers/DevoirC.php';
+include __DIR__.'/../../models/devoir.php';
 
-if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
-  http_response_code(403);
-  header("Location:../index.php");
-  exit();
-}
-
-$error = "";
-
-// create user
-$user = null;
-
-$input_validation = true;
-
-// create an instance of the controller
-$userC = new UserController();
-
-if (
-    isset($_POST["id"]) &&
-    isset($_POST["name"]) &&
-    isset($_POST["email"]) &&
-    isset($_POST["phone"]) &&
-    isset($_POST["role"]) &&
-    isset($_POST["password"])
-) {
-  $input_validation = validate_form_input_update($_POST["name"],
-  $_POST["phone"], $_POST["email"], $_POST["role"], $_POST["id"]);
-  if ($input_validation) {
-      $user = new User(
-          id:$_POST['id'],
-          name:$_POST['name'],
-          email:$_POST['email'],  
-          phone:$_POST['phone'],
-          role:$_POST["role"],
-          password:$_POST["password"]
-      );
-      $userC->updateUser($user, $_POST["id"]);
-      header("Location:dashboardUser.php");
-  }
-}
-if (!$input_validation) {
-    ?>
-      <script>alert("Le nom d'utilisateur doit uniquement contenir des caractères simple\nLe mot de passe doit être entre 4 et 16 caractères et contenir au moins une lette majuscule \n L'adresse mail doit être valide \n Le numéro de téléphone doit contenir exactement 8 chiffres \n Le rôle est un entier entre 0 et 3 \n l'id doit être un entier")</script>
-      <script>window.location.href = "dashboardUser.php"</script>
-    <?php
-}
+$DevoirC = new DevoirController();
+$list = $DevoirC->listDevoirs();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +16,7 @@ if (!$input_validation) {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="stylesheet" href="../css/style.css">
   <title>
     Dashboard admin
   </title>
@@ -87,11 +44,13 @@ if (!$input_validation) {
         <span class="ms-1 font-weight-bold">PulseCreatif</span>
       </a>
     </div>
+
+
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link  active" href="dashboardUser.php">
+          <a class="nav-link  active" href="#">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>office</title>
@@ -107,10 +66,39 @@ if (!$input_validation) {
                 </g>
               </svg>
             </div>
-            <span class="nav-link-text ms-1">Tables</span>
+            <span class="nav-link-text ms-1">Dashboard 1</span>
           </a>
         </li>
     </div>
+    
+
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link  active" href="evaluation.php">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>office</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g id="office" transform="translate(153.000000, 2.000000)">
+                        <path class="color-background opacity-6" d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z"></path>
+                        <path class="color-background" d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard2</span>
+          </a>
+        </li>
+    </div>
+
+
+
+
   </aside>
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
@@ -119,7 +107,7 @@ if (!$input_validation) {
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tables</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page"></li>
           </ol>
           <h6 class="font-weight-bolder mb-0">Tables</h6>
         </nav>
@@ -136,7 +124,6 @@ if (!$input_validation) {
                 <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
               </a>
             </li>
-            <li><a href="disconnect.php">Se déconnecter</a></li>
         </div>
       </div>
     </nav>
@@ -197,75 +184,42 @@ if (!$input_validation) {
     </div>
   </div>
 
-  <?php
-    if (isset($_POST['id'])) {
-        $user = $userC->showUser($_POST['id']);
-    ?>
-    <form action="" method="POST">
-        <table border="1" align="center">
-            <tr>
-                <td>
-                    <label for="id">ID:
-                    </label>
-                </td>
-                <td><input type="text" name="id" id="id" value="<?php echo $user['USER_ID']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="name">Nom d'utilisateur:
-                    </label>
-                </td>
-                <td><input type="text" name="name" id="name" value="<?php echo $user['USER_NAME']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="phone">Telephone:
-                    </label>
-                </td>
-                <td><input type="tel" name="phone" id="phone" value="<?php echo $user['USER_PHONENUM']; ?>" maxlength="20"></td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="email">Email:
-                    </label>
-                </td>
-                <td>
-                    <input type="email" name="email" value="<?php echo $user['USER_EMAIL']; ?>" id="email">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="role">Role:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="role" id="role" value="<?php echo $user["USER_ROLE"]; ?>">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="password">Password:
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="password" id="password" value="<?php echo $user["USER_PASSWORD"]; ?>">
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Update">
-                </td>
-                <td>
-                    <input type="reset" value="Reset">
-                </td>
-            </tr>
-        </table>
-    </form>
-<?php
-}
-?>
 
+<table border="1" align="center" width="60%">
+        <tr>
+            <th>Id Depot</th>
+            <th>Id Cours</th>
+            <th>Date Limite</th>
+            <th>Fichier</th>
+            <th>Commentaire</th>
+            <th>Etat</th>
+            
+        </tr>
+        <?php
+        foreach ($list as $devoir) {
+        ?>
+            <tr>
+                <td><?= $devoir['DEPOT_ID']; ?></td>
+                <td><?= $devoir['COURS_ID']; ?></td>
+				        <td><?= $devoir['DATE_LIMITE']; ?></td>
+                <td><?= $devoir['FICHIER']; ?></td>
+                <td><?= $devoir['COMMENTAIRE']; ?></td>
+                <td><?= $devoir['ETAT']; ?></td>
+                <td align="center">
+                    <form method="POST" action="miseajourDevoir.php">
+                        <input type="submit" name="update" value="Update">
+                        <input type="hidden" value=<?PHP echo $devoir['DEPOT_ID']; ?> name="DEPOT_ID">
+                    </form>
+		
+                </td>
+                <td>
+                	<a href="../supprimerdevoir.php?id=<?php echo $devoir['DEPOT_ID']; ?>">Delete</a>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+    </table>
 
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
@@ -286,4 +240,5 @@ if (!$input_validation) {
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
 </body>
+
 </html>
