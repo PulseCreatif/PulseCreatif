@@ -3,7 +3,7 @@ include 'c:/xampp/htdocs/projetweb/Controller/CoursC.php';
 include 'c:/xampp/htdocs/projetweb/Model/cours.php';
 $CoursC = new CoursC();
 //$tab = $CoursC->listcours();
-if (isset($_GET['search'])) {
+/*if (isset($_GET['search'])) {
     // Get the search query from the URL
     $search_query = $_GET['search'];
 
@@ -12,7 +12,42 @@ if (isset($_GET['search'])) {
 } else {
     // If no search query is provided, display all courses
     $tab = $CoursC->listcours();
+}*/
+// Get the list of course names from the database
+//print_r($_GET);
+$course_names = $CoursC->getCoursesNames();
+
+// Initialize filter options
+$filter_options = array();
+
+// Check if any course checkboxes are selected
+$course_filter_selected = false;
+foreach ($course_names as $course_name) {
+    if (isset($_GET['course_' . $course_name])) {
+        $course_filter_selected = true;
+        // Set filter option for the selected course name
+        $filter_options['course_' . $course_name] = true;
+    }
 }
+
+// Check which type options are selected
+if (isset($_GET['type_free'])) {
+    $filter_options['type_free'] = true;
+}
+if (isset($_GET['type_premium'])) {
+    $filter_options['type_premium'] = true;
+}
+
+// Perform the filtered search
+if ($course_filter_selected || isset($filter_options['type_free']) || isset($filter_options['type_premium'])) {
+    // If any course checkbox is selected or type options are selected, perform the filtered search
+    $tab = $CoursC->searchCours($filter_options, $course_names);
+} else {
+    // If no filter options are selected, display all courses
+    $tab = $CoursC->listcours();
+}
+
+
 ?>
 
 
@@ -96,19 +131,45 @@ if (isset($_GET['search'])) {
         <div class="container">
             <div class="row">
                 <!-- Sidebar -->
-                <div id="aside" class="col-md-3 pull-right">
-                    <!-- Search widget -->
+                <!--<div id="aside" class="col-md-3 pull-right">
+                    
                     <div class="widget search-widget">
                         <form method="GET" action="">
                             <input class="input" type="text" name="search" placeholder="Search...">
                             <button type="submit"><i class="fa fa-search"></i></button>
                         </form>
                     </div>
-                    <!-- /Search widget -->
-                </div>
-
-
+                    
+                </div>-->
                 <!-- /Sidebar -->
+                <!-- Sidebar -->
+                <div id="aside" class="col-md-3 pull-right">
+                    <!-- Filter widget -->
+                    <div class="widget filter-widget">
+                        <form method="GET" action="">
+                            <h4>Filter by type</h4>
+                            <input type="checkbox" name="type_free" id="type_free" value="0">
+                            <label for="type_free">Free</label>
+                            <br>
+                            <input type="checkbox" name="type_premium" id="type_premium" value="1">
+                            <label for="type_premium">Premium</label>
+
+                            <h4>Filter by Course Name</h4>
+
+                            <?php foreach ($course_names as $course_name) { ?>
+                                <input type="checkbox" name="course_<?php echo $course_name; ?>" id="course_<?php echo $course_name; ?>" value="<?php echo $course_name; ?>">
+                                <label for="course_<?php echo $course_name; ?>"><?php echo $course_name; ?></label>
+                                <br>
+                            <?php } ?>
+
+
+                            <button type="submit" class="main-button icon-button">Apply Filters</button>
+                        </form>
+                    </div>
+                    <!-- /Filter widget -->
+                </div>
+                <!-- /Sidebar -->
+
                 <!-- Courses Content -->
                 <div class="col-md-9">
                     <!-- courses -->

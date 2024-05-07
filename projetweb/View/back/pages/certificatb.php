@@ -1,6 +1,7 @@
 <?php
 include 'C:/xampp/htdocs/projetweb/Controller/certifC.php';
 include 'C:/xampp/htdocs/projetweb/Model/certif.php';
+//include 'C:/xampp/htdocs/projetweb/View/back/pages/phpmailer';
 $error = "";
 $certif = NULL;
 $CertifC = new CertifC();
@@ -12,11 +13,16 @@ if (isset($_GET['search'])) {
 
     // Perform the search based on the course name or professor's name
     $tab = $CertifC->searchcertif($search_query);
-} else {
+} elseif (isset($_GET['sort'])) {
     // If no search query is provided, display all courses
+    $sort_criteria = $_GET['sort'];
+
+    // Trier les cours selon le critère spécifié
+    $tab = $CertifC->sortByCriteriaCertif($sort_criteria);
+} else {
+    // Si aucun critère de tri n'est spécifié, afficher tous les cours
     $tab = $CertifC->listcertif();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -167,22 +173,32 @@ if (isset($_GET['search'])) {
         </div> <!-- end of ex-basic-1 -->
         <!-- end of breadcrumbs -->
         <br>
-        <!--<button><a href="ajouterCours.php">Ajouter un cours</a></button>-->
+
         <span class="nav-item">
             <center> <a class="btn bg-gradient-primary btn-sm" href="ajoutercertif.php">Ajouter</a></center>
         </span>
         <br>
+        <form id="sortForm" action="" method="GET">
+            <button type="submit" class="btn bg-gradient-primary btn-sm">Trier</button>
+            <select name="sort">
+                <option value="Id_Cert">Trier par ID</option>
+                <option value="Date_Cert">Trier par Date Certificat</option>
+                <option value="Titre_Cert">Trier par Titre Certificat</option>
+            </select>
+
+        </form>
         <table border="1" align="center">
             <tr>
                 <th>IdCertificat</th>
                 <th>TitreCertificat</th>
-                <th>DateCertificat</th>
-                <th>TypeCours</th>
+                <th>Date</th>
+                <th>Duree</th>
                 <th>NomEtudiant</th>
                 <th>Idcours</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
                 <th>PDF</th>
+                <th>Mail</th>
             </tr>
             <?php
             foreach ($tab as $certif) {
@@ -195,20 +211,37 @@ if (isset($_GET['search'])) {
 
                     <td><?php echo $certif['Nom_Etud']; ?></td>
                     <td><?php echo $certif['Id_Cours']; ?></td>
+                    <style>
+                        .image-bt {
+                            width: 20px;
+                            height: 20px;
+                            display: block;
+                            margin: 0 auto;
+                        }
+                    </style>
                     <td>
                         <form method="POST" action="modifiercertif.php">
-
-                            <input type="hidden" value=<?= $certif['Id_Cert']; ?> name="Id_Cert">
-                            <button type="submit" class="btn bg-gradient-primary btn-sm">Modifier</button>
+                            <input type="hidden" value="<?= $certif['Id_Cert']; ?>" name="Id_Cert">
+                            <input type="image" src="../assets/img/modif.png" class="image-bt" alt="Modifier">
                         </form>
                     </td>
                     <td>
-
-                        <a href="supprimercertif.php?Id_Cert=<?php echo $certif['Id_Cert']; ?>" class="btn bg-gradient-primary btn-sm">Supprimer</a>
+                        <a href="supprimercertif.php?Id_Cert=<?= $certif['Id_Cert']; ?>" onclick="return confirm('Are you sure you want to delete this certificate?');">
+                            <img src="../assets/img/supp.png" class="image-bt" alt="Supprimer">
+                        </a>
                     </td>
-                    <td>
 
-                        <a href="#" class="btn bg-gradient-primary btn-sm">PDF</a>
+
+
+
+                    <td>
+                        <a href="pdf.php?Id_Cert=<?= $certif['Id_Cert']; ?> &ACTION=DOWNLOAD" class="btn bg-gradient-primary btn-sm">PDF</a>
+                    </td>
+
+
+                    <td>
+                        <a href="pdf.php?Id_Cert=<?= $certif['Id_Cert']; ?> &ACTION=EMAIL" class="btn bg-gradient-primary btn-sm">Email PDF</a>
+                        <!-- <a href="send.php" class="btn bg-gradient-primary btn-sm">Email PDF</a>-->
                     </td>
                 </tr>
             <?php

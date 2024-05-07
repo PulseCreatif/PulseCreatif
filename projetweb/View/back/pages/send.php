@@ -1,26 +1,64 @@
 <?php
-include 'C:/xampp/htdocs/projetweb/Controller/CoursC.php';
-include 'C:/xampp/htdocs/projetweb/Model/cours.php';
-$error = "";
-$cours = NULL;
-$CoursC = new CoursC();
-//$tab = $CoursC->listcours();
-if (isset($_GET['search'])) {
-    // Get the search query from the URL
-    $search_query = $_GET['search'];
 
-    // Perform the search based on the course name or professor's name
-    $tab = $CoursC->searchC($search_query);
-} elseif (isset($_GET['sort'])) {
-    // Récupérer le critère de tri depuis le formulaire
-    $sort_criteria = $_GET['sort'];
 
-    // Trier les cours selon le critère spécifié
-    $tab = $CoursC->sortByCriteria($sort_criteria);
-} else {
-    // Si aucun critère de tri n'est spécifié, afficher tous les cours
-    $tab = $CoursC->listcours();
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+
+
+if ($_POST && isset($_POST['send'])) {
+
+    $name = "Pulse Creatif";  // Name of your website or yours
+    $to = $_POST['email'];  // mail of reciever
+    $subject = $_POST['subject'];
+    $body = $_POST['message'];
+    $from = "tgear2023@gmail.com";  // you mail
+    $password = "ivaebkwsahnsdhsf";  // your mail password
+
+    // Ignore from here
+
+    require_once "PHPMailer/PHPMailer.php";
+    require_once "PHPMailer/SMTP.php";
+    require_once "PHPMailer/Exception.php";
+    $mail = new PHPMailer();
+
+    // To Here
+
+    //SMTP Settings
+    $mail->isSMTP();
+    // $mail->SMTPDebug = 3;  Keep It commented this is used for debugging                          
+    $mail->Host = "smtp.gmail.com"; // smtp address of your email
+    $mail->SMTPAuth = true;
+    $mail->Username = $from;
+    $mail->Password = $password;
+    $mail->Port = 587;  // port
+    $mail->SMTPSecure = "tls";  // tls or ssl
+    $mail->smtpConnect([
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ]
+    ]);
+
+    //Email Settings
+    $mail->isHTML(true);
+    $mail->setFrom("eya.latiri@gmail.com", $name);
+    $mail->addAddress($to); // enter email address whom you want to send
+    $mail->Subject = ("$subject");
+    $mail->Body = $body;
+    if ($mail->send()) {
+        echo "success";
+        header('Location:certificatb.php');
+    } else {
+        echo "Something is wrong: <br><br>" . $mail->ErrorInfo;
+    }
 }
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +80,7 @@ if (isset($_GET['search'])) {
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
-    <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
@@ -61,7 +99,7 @@ if (isset($_GET['search'])) {
         <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link  " href="../pages/certificatb.php">
+                    <a class="nav-link active " href="../pages/certificatb.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
@@ -81,7 +119,7 @@ if (isset($_GET['search'])) {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  active" href="../pages/coursesb.php">
+                    <a class="nav-link  " href="../pages/coursesb.php">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>office</title>
@@ -101,7 +139,12 @@ if (isset($_GET['search'])) {
                     </a>
                 </li>
 
+
+
+
+
     </aside>
+
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- Navbar -->
@@ -110,24 +153,16 @@ if (isset($_GET['search'])) {
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Cours</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Certificat</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Cours</h6>
+                    <h6 class="font-weight-bolder mb-0">Certificat</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        <div class="widget search-widget">
-                            <form method="GET" action="">
-                                <div class="input-group">
-                                    <input class="form-control input" type="text" name="search" placeholder="Search..." style="height: 38px;">
-                                    <button type="submit" class="btn btn-outline-primary" style="height: 38px;"><i class="fa fa-search"></i></button>
-                                </div>
-                            </form>
+                        <div class="input-group">
+                            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" placeholder="Type here...">
                         </div>
-
-
-
-
                     </div>
                     <ul class="navbar-nav justify-content-end">
                         <li class="nav-item d-flex align-items-center">
@@ -144,113 +179,25 @@ if (isset($_GET['search'])) {
             </div>
         </nav>
 
-        <!-- Header -->
-        <header id="header" class="ex-header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1>LISTES DES COURS</h1>
-                    </div> <!-- end of col -->
-                </div> <!-- end of row -->
-            </div> <!-- end of container -->
-        </header> <!-- end of ex-header -->
-        <!-- end of header -->
-        <!-- Breadcrumbs -->
-        <div class="ex-basic-1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-10">
-                    </div><!-- end of col -->
-                    <div class="col-lg-20">
-                        <div class="breadcrumbs">
-                        </div><!-- end of breadcrumbs -->
-                    </div>
-                </div> <!-- end of row -->
-            </div> <!-- end of container -->
-        </div> <!-- end of ex-basic-1 -->
-        <!-- end of breadcrumbs -->
-        <br>
-        <!--<button><a href="ajouterCours.php">Ajouter un cours</a></button>-->
-        <span class="nav-item">
-            <center> <a class="btn bg-gradient-primary btn-sm" href="ajoutercours.php">Ajouter</a></center>
-        </span>
-        </br>
-        <form id="sortForm" action="" method="GET">
-            <button type="submit" class="btn bg-gradient-primary btn-sm">Trier</button>
-            <select name="sort">
-                <option value="Id_cours">Trier par ID</option>
-                <option value="Nom_cours">Trier par Nom Cours</option>
-                <option value="Nom_Ens">Trier par Nom Enseignant</option>
-            </select>
+        <div class="container">
+            <h2>Envoyer un mail</h2>
+            <form action="" method="POST">
 
-        </form>
-        <table border="1" align="center">
-            <tr>
-                <th>idCours</th>
-                <th>NomCours</th>
-                <th>Durée</th>
-                <th>TypeCours</th>
-                <th>NomEnseignant</th>
-                <th>Modifier</th>
-                <th>Supprimer</th>
-            </tr>
-            <?php
-            foreach ($tab as $cours) {
-            ?>
-                <tr>
-                    <td><?php echo $cours['Id_cours']; ?></td>
-                    <td><?php echo $cours['Nom_cours']; ?></td>
-                    <td><?php echo $cours['Nbr_heures']; ?></td>
-                    <td>
-                        <?php
-                        if ($cours['Type_cours'] == 1) {
-                            echo "Premium";
-                        } else {
-                            echo "Free";
-                        }
-                        ?>
-                    </td>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email" value=""> <br>
 
-                    <td><?php echo $cours['Nom_Ens']; ?></td>
-                    <style>
-                        .image-bt {
-                            width: 20px;
-                            height: 20px;
-                            display: block;
-                            margin: 0 auto;
-                        }
-                    </style>
-                    <td>
-                        <form method="POST" action="modifiercours.php">
+                <label for="subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" name="subject" id="subject" value=""> <br>
 
-                            <input type="hidden" value=<?= $cours['Id_cours']; ?> name="Id_cours">
+                <label for="message" class="form-label">Message</label>
+                <input type="text" class="form-control" name="message" id="message" value=""> <br>
 
-                            <input type="image" src="../assets/img/modif.png" class="image-bt" alt="Modifier">
-                        </form>
-                    </td>
-                    <td>
-                        <a href="supprimercours.php?Id_cours=<?php echo $cours['Id_cours']; ?>" onclick="return confirm('Are you sure you want to delete this course?');"></a>
-                        <img src="../assets/img/supp.png" class="image-bt" alt="Supprimer">
-                    </td>
+                <button type="submit" name="send" class="btn btn-primary">Send</button>
 
-                </tr>
-            <?php
-            }
-            ?>
-        </table>
-        <!-- Breadcrumbs -->
-        <div class="ex-basic-1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="breadcrumbs">
+            </form>
 
-                        </div> <!-- end of breadcrumbs -->
-                    </div> <!-- end of col -->
-                </div> <!-- end of row -->
-            </div> <!-- end of container -->
-        </div> <!-- end of ex-basic-1 -->
-        <!-- end of breadcrumbs -->
+        </div>
+
     </main>
     <!-- Footer -->
     <footer class="footer pt-3 mt-auto">

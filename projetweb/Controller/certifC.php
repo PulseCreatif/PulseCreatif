@@ -180,4 +180,38 @@ class CertifC
         // Return the filtered results
         return $result;
     }
+    public function sortByCriteriaCertif($criteria)
+    {
+        // Connectez-vous à votre base de données
+        $db = config::getConnexion();
+
+        // Définissez la requête SQL de base
+        $sql = "SELECT * FROM certificat";
+
+        // Ajoutez la clause ORDER BY en fonction du critère sélectionné
+        switch ($criteria) {
+            case "Id_Cert":
+                $sql .= " ORDER BY Id_Cert";
+                break;
+            case "Date_Cert":
+                $sql .= " ORDER BY Date_Cert";
+                break;
+            case "Titre_Cert":
+                $sql .= " ORDER BY Titre_Cert";
+                break;
+            default:
+                // Si le critère n'est pas reconnu, ne faites rien
+                break;
+        }
+
+        // Exécutez la requête SQL
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        // Récupérez les résultats
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Retournez les résultats triés
+        return $result;
+    }
 }
