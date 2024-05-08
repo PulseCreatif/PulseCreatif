@@ -8,7 +8,7 @@ class config
         if (!isset(self::$pdo)) {
             try {
                 self::$pdo = new PDO(
-                    'mysql:host=localhost;dbname=skillpulse',
+                    'mysql:host=localhost;dbname=project',
                     'root',
                     '',
                     [

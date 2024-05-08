@@ -1,5 +1,6 @@
 <?php
-require_once 'C:\xampp\htdocs\skillpulse\config.php'; // Include the config.php file
+require_once 'C:\xampp\htdocs\skillpulse\config.php'; 
+require_once 'C:\xampp\htdocs\skillpulse\Model\HistoriqueDAO.php'; // Include the config.php file
 class CategorieC
 {
     function listCategories() 
@@ -26,14 +27,16 @@ class CategorieC
                 'Nom_Categorie' => $category->getNom_Categorie(),
                 'Description_Categorie' => $category->getDescription_Categorie()
             ]);
-            // Optionally, you can return the ID of the inserted row
-            // return $db->lastInsertId();
+    
+            $actionType = 'ajout';
+            $tableConcernee = 'categorie';
+            $idLigneModifiee = $db->lastInsertId();
+            $utilisateurId = 123;
+    
+            HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
         } catch (PDOException $e) {
-            // Handle PDO exceptions
-            // For example, you can log the error or display a message to the user
             echo 'Error: ' . $e->getMessage();
         } catch (Exception $e) {
-            // Handle other exceptions
             echo 'Error: ' . $e->getMessage();
         }
     }
@@ -50,11 +53,18 @@ class CategorieC
                 'Nom_Categorie' => $category->getNom_Categorie(),
                 'Description_Categorie' => $category->getDescription_Categorie()
             ]);
+    
+            $actionType = 'modification';
+            $tableConcernee = 'categorie';
+            $idLigneModifiee = $category->getID_Categorie();
+            $utilisateurId = 123;
+    
+            HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
         } catch (Exception $e) {
             die('Error:' . $e->getMessage());
         }
     }
-
+    
     function deleteCategory($ID_Categorie)
     {
         $sql = "DELETE FROM categorie WHERE ID_Categorie=:ID_Categorie";
@@ -62,10 +72,18 @@ class CategorieC
         try {
             $query = $db->prepare($sql);
             $query->execute(['ID_Categorie' => $ID_Categorie ]);
+    
+            $actionType = 'suppression';
+            $tableConcernee = 'categorie';
+            $idLigneModifiee = $ID_Categorie;
+            $utilisateurId = 123;
+    
+            HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
         } catch (Exception $e) {
             die('Error:' . $e->getMessage());
         }
     }
+    
 
     function getCategoryById($ID_Categorie)
     {
@@ -76,6 +94,19 @@ class CategorieC
             $query->execute(['ID_Categorie' => $ID_Categorie ]);
             $category = $query->fetch();
             return $category;
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
+    }
+    function listCategoriesSortedByName() 
+    {
+        $sql = "SELECT * FROM categorie ORDER BY Nom_Categorie";
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute();
+            $categories = $query->fetchAll();
+            return $categories;
         } catch (Exception $e) {
             die('Error:' . $e->getMessage());
         }

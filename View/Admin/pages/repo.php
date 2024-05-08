@@ -44,8 +44,7 @@ $listeCategories = $categorieC->listCategories();
           <div>
           <div>
           <a href="trieemail.php" class="btn btn-primary" style="text-decoration: none; color: white;">Trier par email</a>
-         
-      
+
 
 </div>
 
@@ -187,6 +186,7 @@ $listeCategories = $categorieC->listCategories();
 <a href="repo.php" class="btn btn-primary" style="text-decoration: none; color: white;">Trier par nom</a>
 
 
+
 <!-- Categories Table code -->
 <div class="container-fluid py-4">
     <div class="row">
@@ -207,8 +207,17 @@ $listeCategories = $categorieC->listCategories();
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Loop through categories -->
-                                <?php foreach ($listeCategories as $category): ?>
+                                <!-- Tri du tableau de catégories par nom -->
+                                <?php 
+                                    // Fonction de comparaison pour trier par nom
+                                    function compareByName($a, $b) {
+                                        return strcmp($a['Nom_Categorie'], $b['Nom_Categorie']);
+                                    }
+                                    // Trier le tableau $listeCategories par nom
+                                    usort($listeCategories, 'compareByName');
+                                    // Boucle sur les catégories triées
+                                    foreach ($listeCategories as $category):
+                                ?>
                                 <tr>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0"><?php echo $category['ID_Categorie']; ?></p>
@@ -239,11 +248,12 @@ $listeCategories = $categorieC->listCategories();
 
 
 
+
 <!-- Form for adding a new category -->
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-md-6">
-
+  
 
             <form method="POST" action="process_categorie.php" onsubmit="return validateCategoryForm()">
                 <div class="mb-3">
@@ -313,6 +323,7 @@ $listeCategories = $categorieC->listCategories();
 
 
   </main>
-  
+
+
 </body>
 </html>

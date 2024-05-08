@@ -1,7 +1,8 @@
 <?php
 
 
-require_once 'C:\xampp\htdocs\skillpulse\config.php'; // Include the config.php file
+require_once 'C:\xampp\htdocs\skillpulse\config.php'; 
+require_once 'C:\xampp\htdocs\skillpulse\Model\HistoriqueDAO.php';// Include the config.php file
 
 class ReclamationsC
 {
@@ -32,6 +33,10 @@ class ReclamationsC
             die('Error:' . $e->getMessage());
         }
     }
+    
+    
+    
+
    
     function listResearcher($researcher)
     {
@@ -87,11 +92,17 @@ class ReclamationsC
                 'Email' => $reclamation->getEmail()
             ]);
             $reclamation->setIdR($config->lastInsertId());
+            
+            // Define utilisateurId (replace 123 with actual user ID)
+            $utilisateurId = 123;
+    
+            // Add historique entry
+            HistoriqueDAO::addHistorique('ajout', 'reclamation', $reclamation->getIdR(), $utilisateurId); // Adjust $utilisateurId according to your application logic
         } catch (PDOException $th) {
             $th->getMessage();
         }
     }
-
+    
 
 
 
@@ -115,6 +126,13 @@ public function addReclamationWithDetails($reclamation)
         
         // Set the ID of the inserted reclamation
         $reclamation->setIdR($config->lastInsertId());
+
+        // Trigger historique entry for the addition
+        $actionType = 'ajout';
+        $tableConcernee = 'reclamation';
+        $idLigneModifiee = $reclamation->getIdR(); // ID of the added reclamation
+        $utilisateurId = 123; // Replace with actual user ID
+        HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
     } catch (PDOException $th) {
         // Return the error message
         return $th->getMessage();
@@ -124,33 +142,79 @@ public function addReclamationWithDetails($reclamation)
 
 
 
-    function modifyReclamation($reclamation)
-    {
-        $config = config::getConnexion();
-        try {
-            $querry = $config->prepare('UPDATE reclamation SET Type=:Type, Etat=:Etat, Description=:Description, Email=:Email WHERE idR=:idR');
-            $querry->execute([
-                'idR' => $reclamation->getIdR(),
-                'Type' => $reclamation->getType(),
-                'Etat' => $reclamation->getEtat(),
-                'Description' => $reclamation->getDescription(),
-                'Email' => $reclamation->getEmail()
-            ]);
-        } catch (PDOException $th) {
-            $th->getMessage();
-        }
+function modifyReclamation($reclamation)
+{
+    $config = config::getConnexion();
+    try {
+        // Get the reclamation before modifying it
+        $reclamationBeforeModification = $this->getReclamationById($reclamation->getIdR());
+
+        // Perform the reclamation modification
+        $querry = $config->prepare('UPDATE reclamation SET Type=:Type, Etat=:Etat, Description=:Description, Email=:Email WHERE idR=:idR');
+        $querry->execute([
+            'idR' => $reclamation->getIdR(),
+            'Type' => $reclamation->getType(),
+            'Etat' => $reclamation->getEtat(),
+            'Description' => $reclamation->getDescription(),
+            'Email' => $reclamation->getEmail()
+        ]);
+
+        // Trigger historique entry
+        $actionType = 'modification';
+        $tableConcernee = 'reclamation';
+        $idLigneModifiee = $reclamation->getIdR(); // ID of the modified reclamation
+        $utilisateurId = 123; // Replace with actual user ID
+        HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
+
+        // Return the reclamation before modification in case it's needed
+        return $reclamationBeforeModification;
+    } catch (PDOException $th) {
+        $th->getMessage();
     }
+}
 
     function deleteReclamation($id)
     {
-        $sql = "DELETE FROM reclamation WHERE idR= :idR";
-        $db = config::getConnexion();
-        $req = $db->prepare($sql);
-        $req->bindValue(':idR', $id);
+        $config = config::getConnexion();
         try {
+            // Get the reclamation before deleting it
+            $reclamationToDelete = $this->getReclamationById($id);
+    
+            // Delete the reclamation
+            $sql = "DELETE FROM reclamation WHERE idR= :idR";
+            $req = $config->prepare($sql);
+            $req->bindValue(':idR', $id);
             $req->execute();
-        } catch (Exception $e) {
+    
+            // Trigger historique entry
+            $actionType = 'suppression';
+            $tableConcernee = 'reclamation';
+            $idLigneModifiee = $id; // ID of the deleted reclamation
+            $utilisateurId = 123; // Replace with actual user ID
+            HistoriqueDAO::addHistorique($actionType, $tableConcernee, $idLigneModifiee, $utilisateurId);
+    
+            // Return the deleted reclamation in case it's needed
+            return $reclamationToDelete;
+        } catch (PDOException $e) {
             die('Erreur: ' . $e->getMessage());
         }
     }
+
+    public function chercherReclamationParEmail($email)
+    {
+        $query = "SELECT * FROM reclamation WHERE Email LIKE :email";
+        $conn = config::getConnexion();
+        try {
+            $stmt = $conn->prepare($query);
+            $stmt->bindValue(':email', '%' . $email . '%', PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Erreur: " . $e->getMessage();
+        }
+    }
+
+   
 }
+    
+    

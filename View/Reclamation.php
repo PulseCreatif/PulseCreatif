@@ -233,11 +233,6 @@ $categorieC = new CategorieC();
             alert('Description should contain only letters and spaces.');
             return false; // Prevent form submission
         }
-        
-        if (!name.match(lettersRegex)) {
-            alert('name should contain only letters and spaces.');
-            return false; // Prevent form submission
-        }
 
 
 

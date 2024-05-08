@@ -43,9 +43,9 @@ $listeCategories = $categorieC->listCategories();
           <a href="export.php" class="btn btn-primary"> exporter excel </a>
           <div>
           <div>
+        
           <a href="trieemail.php" class="btn btn-primary" style="text-decoration: none; color: white;">Trier par email</a>
-         
-      
+
 
 </div>
 
@@ -55,60 +55,59 @@ $listeCategories = $categorieC->listCategories();
     <!-- Add similar structure for other columns -->
 </div>
 
-        <div class="card-body px-0 pt-0 pb-2">
-          <div class="table-responsive p-0">
-            <table class="table align-items-center mb-0">
-              <thead>
+<!-- Remplacez le code de votre tableau de réclamations par ceci -->
+<div class="card-body px-0 pt-0 pb-2">
+    <div class="table-responsive p-0">
+        <table class="table align-items-center mb-0">
+            <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etat</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subject</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
-                  <th class="text-secondary opacity-7"></th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etat</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subject</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                    <th class="text-secondary opacity-7"></th>
                 </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($listeReclamations as $reclamation): ?>
-                  <tr>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0"><?php echo $reclamation['Type']; ?></p>
-                    </td>
-                    <td class="align-middle text-center text-sm">
-                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Etat']; ?></span>
-                    </td>
-
-
-                    <td class="align-middle text-center text-sm">
-                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Name']; ?></span>
-                    </td>
-
-                    <td class="align-middle text-center text-sm">
-                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Subject']; ?></span>
-                    </td>
-
-                    <td class="align-middle text-center text-sm">
-                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Description']; ?></span>
-                    </td>
-                    <td class="align-middle text-center text-sm">
-                      <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Email']; ?></span>
-                    </td>
-
-
-                    <td class="align-middle">
-                      <a href="edit_reclamation.php?idR=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-secondary me-2" data-toggle="tooltip" data-original-title="Edit">Edit</a>
-                      <a href="process_reclamation.php?delete=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-danger" data-toggle="tooltip" data-original-title="Delete reclamation">Delete</a>
-                    </td>
-                  </tr>
+            </thead>
+            <tbody>
+                <?php 
+                // Fonction de comparaison pour trier par email
+                function compareByEmail($a, $b) {
+                    return strcmp($a['Email'], $b['Email']);
+                }
+                // Trier le tableau $listeReclamations par email
+                usort($listeReclamations, 'compareByEmail');
+                // Boucle sur les réclamations triées
+                foreach ($listeReclamations as $reclamation): ?>
+                    <tr>
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0"><?php echo $reclamation['Type']; ?></p>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Etat']; ?></span>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Name']; ?></span>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Subject']; ?></span>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Description']; ?></span>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="text-secondary text-xs font-weight-bold"><?php echo $reclamation['Email']; ?></span>
+                        </td>
+                        <td class="align-middle">
+                            <a href="edit_reclamation.php?idR=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-secondary me-2" data-toggle="tooltip" data-original-title="Edit">Edit</a>
+                            <a href="process_reclamation.php?delete=<?php echo $reclamation['idR']; ?>" class="btn btn-sm btn-danger" data-toggle="tooltip" data-original-title="Delete reclamation">Delete</a>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+            </tbody>
+        </table>
     </div>
-  </div>
 </div>
 
 
@@ -185,7 +184,6 @@ $listeCategories = $categorieC->listCategories();
 
 
 <a href="repo.php" class="btn btn-primary" style="text-decoration: none; color: white;">Trier par nom</a>
-
 
 <!-- Categories Table code -->
 <div class="container-fluid py-4">
@@ -313,6 +311,7 @@ $listeCategories = $categorieC->listCategories();
 
 
   </main>
-  
+
+
 </body>
 </html>
