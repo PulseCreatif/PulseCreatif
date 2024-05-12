@@ -38,9 +38,10 @@ if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 2) {
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-                        <li><a href="index.php">Home</a></li>
+                        <li><a href="index.php">Accueil</a></li>
+						<li><a href="dashboardFront.php">Dashboard</a></li>
 						<li><a href="gemini.php">ChatBot</a></li>
-						<li><a href="disconnect.php">Logout</a></li>
+						<li><a href="disconnect.php">Se déconnecter</a></li>
 					</ul>
 				</nav>
 

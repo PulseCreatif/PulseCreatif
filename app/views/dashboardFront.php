@@ -1,75 +1,27 @@
 <?php
 session_start();
 
-require_once(__DIR__.'/../../app/controllers/UserC.php');
-require_once(__DIR__.'/../../app/models/User.php');
-require_once(__DIR__.'/../../app/utils.php');
-
-//print_r($_SESSION);
-
-$error = "";
-
-// create user
-$user = null;
-
-$input_validation = true;
-
-if ($_SESSION["user_role"] == 1) {
-    header("Location:espEtud.php");
-}
-else if ($_SESSION["user_role"] == 2) {
-    header("Location:espEtud_Prem.php");
-}
-else if ($_SESSION["user_role"] == 3) {
-    header("Location:espProf.php");
-}
-else if ($_SESSION["user_role"] === 0) {
-    header("Location:pages/dashboardUser.php");
-}
-else if (isset($_POST["name"]) and isset($_POST["password"])) {
-    $input_validation = validate_form_input_login($_POST["name"], $_POST["password"]);
-
-    if ($input_validation) {
-        $sql = "SELECT * from myapp.TABLE_USER where USER_NAME = '" .  $_POST['name'] . "' and USER_PASSWORD = '" . md5($_POST["password"]) . "'";
-        $db = config::getConnexion();
-        try {
-            $query = $db->prepare($sql);
-            $query->execute();
-    
-            $user = $query->fetch();
-            if ($user != null) {
-                $_SESSION["user_role"] = $user["USER_ROLE"];
-            }
-        } catch (Exception $e) {
-            die('Error: ' . $e->getMessage());
-        }    
-    }
+if (!isset($_SESSION["user_role"])) {
+	$_SESSION["user_role"] = null;
+    header("Location: index.php");
 }
 
-if (!$input_validation) {
-    ?>
-    <script>
-        alert("Le nom d'utilisateur doit uniquement contenir des caractères simple\nLe mot de passe doit être entre 4 et 34 caractères et contenir au moins une lette majuscule")
-    </script>
-    <?php
+function select_esp_file() {
+	if ($_SESSION["user_role"] == 0) {
+		return "pages/dashboardUser.php";
+	}
+	else if ($_SESSION["user_role"] == 1) {
+		return "espEtud.php";
+	}
+	else if ($_SESSION["user_role"] == 2) {
+		return "espEtud_Prem.php";
+	}
+	else if ($_SESSION["user_role"] == 3) {
+		return "espProf.php";
+	}
 }
-
-
-if ($user and $user["USER_ROLE"] == "0") {
-    header("Location:pages/dashboardUser.php");
-}
-
-if ($user and $user["USER_ROLE"] == "1") {
-    header("Location:espEtud.php");
-}
-else if ($user and $user["USER_ROLE"] == "2") {
-    header("Location:espEtud_Prem.php");
-}
-else if ($user and $user["USER_ROLE"] == "3") {
-    header("Location:espProf.php");
-}
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -82,6 +34,9 @@ else if ($user and $user["USER_ROLE"] == "3") {
 		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -109,15 +64,9 @@ else if ($user and $user["USER_ROLE"] == "3") {
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-						<li><a href="index.php">Accueil</a></li>
-                        <li><a href="signIn.php">Se connecter</a></li>
-                        <li><a href="addUser.php">Créez votre compte</a></li>
-                        <!--
-                        <li><a href="coures.html">Courses</a></li>
-                        <li><a href="devoir.html">Devoir</a></li>
-                        <li><a href="reclamation.html">Reclamation</a></li>
-                        <li><a href="formu.html">Forum</a></li>
-                        -->
+                    <li><a href="index.php">Accueil</a></li>
+						<li><a href="gemini.php">ChatBot</a></li>
+						<li><a href="disconnect.php">Se déconnecter</a></li>
 					</ul>
 				</nav>
                 </div>
@@ -134,34 +83,37 @@ else if ($user and $user["USER_ROLE"] == "3") {
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
 							<li><a href="index.php">Accueil</a></li>
-							<li>Se connecter</li>
+							<li>Dashboard</li>
 						</ul>
-						<h1 class="white-text">Connectez vous à votre compte PulseCreatif</h1>
+						<h1 class="white-text">Votre Dashboard</h1>
 
 					</div>
 				</div>
 			</div>
-
-		</div>
-
-
-        <div id="error">
-            <?php echo $error; ?>
         </div>
 
-		<!-- /Hero-area -->
-        <form id="signupForm" action="" method="POST">
-            <div>
-                <label for="Nom">Nom d'utilisateur</label>
-                <input type="text" id="Nom" name="name" maxlength=20 required>
-            </div>
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <hr>
-            <button type="submit">Se connecter</button>
+        <form id="signupForm">
+            <h4> Espace utilisateur</h4>
+                <a href="<?=select_esp_file();?>">Votre compte</a>
         </form>
 
+        <hr>
+
+        <form id="signupForm">
+            <h4>Espace Devoirs</h4>
+                <a href="afficherdevoir.php">Afficher vos devoirs</a>
+                <hr>
+                <a href="ajouterdevoir.php">Ajouter un devoir</a>
+        </form>
+
+        <hr>
+
+        <form id="signupForm">
+            <h4>Espace évaluations</h4>
+                <a href="afficherevaluation.php">Afficher vos évaluations</a>
+                <hr>
+                <a href="ajouterevaluation.php">Ajouter une évaluation</a>
+        </form>
 
 
     <!-- Footer -->

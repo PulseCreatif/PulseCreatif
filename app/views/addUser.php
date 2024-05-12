@@ -98,9 +98,9 @@ if (
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-						<li><a href="index.php">Home</a></li>
-                        <li><a href="signIn.php">Sign In</a></li>
-                        <li><a href="addUser.php">Sign Up</a></li>
+						<li><a href="index.php">Accueil</a></li>
+                        <li><a href="signIn.php">Se connecter</a></li>
+                        <li><a href="addUser.php">Créez un compte</a></li>
                         <!--
                         <li><a href="coures.html">Courses</a></li>
                         <li><a href="devoir.html">Devoir</a></li>
@@ -122,10 +122,10 @@ if (
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
-							<li><a href="index.php">Home</a></li>
-							<li>Sign up</li>
+							<li><a href="index.php">Accueil</a></li>
+							<li>Créez votre compte</li>
 						</ul>
-						<h1 class="white-text">Create a PulseCreatif account</h1>
+						<h1 class="white-text">Créez votre compte</h1>
 
 					</div>
 				</div>
@@ -141,7 +141,7 @@ if (
 		<!-- /Hero-area -->
         <form id="signupForm" action="" method="POST">
             <div>
-                <label for="Nom">Username</label>
+                <label for="Nom">Nom d'utilisateur</label>
                 <input type="text" id="Nom" name="name" maxlength=20 required>
             </div>
 
@@ -150,19 +150,19 @@ if (
                 <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="telephone">Phone number</label>
+                <label for="telephone">Numéro de téléphone</label>
                 <input type="tel" id="telephone" name="phone" required>
             </div>
 
             <div>
-                <label for="password">Password</label>
+                <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required>
             </div>
 
             <div class="g-recaptcha" data-sitekey="6LdiKcYpAAAAAMKeEihNupuDfND3seiAZ-Gr-d89"></div>
             <br/>
 
-            <button type="submit">Create your account</button>
+            <button type="submit">Créez votre compte</button>
         </form>
 
 

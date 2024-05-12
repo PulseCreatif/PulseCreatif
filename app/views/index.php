@@ -19,7 +19,7 @@ function select_esp_file() {
 	else if ($_SESSION["user_role"] == 2) {
 		return "espEtud_Prem.php";
 	}
-	if ($_SESSION["user_role"] == 3) {
+	else if ($_SESSION["user_role"] == 3) {
 		return "espProf.php";
 	}
 }
@@ -64,17 +64,17 @@ function select_esp_file() {
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-						<li><a href="index.php">Home</a></li>
+						<li><a href="index.php">Accueil</a></li>
 						<?php if(!isset($_SESSION["user_role"])) {
 						?>
-                        <li><a href="signIn.php">Sign In</a></li>
-                        <li><a href="addUser.php">Sign Up</a></li>
+                        <li><a href="signIn.php">Se connecter</a></li>
+                        <li><a href="addUser.php">Créez votre compte</a></li>
 						<?php
 						}
 						else {
 							?>
-								<li><a href="<?=select_esp_file()?>">Account</a></li>
-								<li><a href="disconnect.php">Logout</a></li>
+								<li><a href="<?=select_esp_file()?>">Votre Compte</a></li>
+								<li><a href="disconnect.php">Se déconnecter</a></li>
 						<?php
 						}
 						?>

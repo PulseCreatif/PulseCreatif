@@ -1,5 +1,13 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
+    http_response_code(403);
+    header("Location:../index.php");
+    exit();
+}
+
 require_once(__DIR__."/../../controllers/EvaluationC.php");
 require_once(__DIR__."/../../models/evaluation.php");
 require_once(__DIR__."/../validation.php");

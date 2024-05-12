@@ -1597,3 +1597,15 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .g-recaptcha {
 	width: 100px;
 }
+
+#signupForm a {
+	width: 100%; /* Largeur maximale */
+    padding: 10px; /* Espace intérieur */
+	border: 1px solid #ccc; /* Bordure */
+    border-radius: 5px; /* Coins arrondis */
+    box-sizing: border-box; /* Inclure la bordure et le remplissage dans la largeur */
+	text-align: center;
+	background-color: #4CAF50; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    cursor: pointer; /* Curseur de souris */
+}

@@ -39,9 +39,10 @@ if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 1) {
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-                        <li><a href="index.php">Home</a></li>
+                        <li><a href="index.php">Accueil</a></li>
+						<li><a href="dashboardFront.php">Dashboard</a></li>
 						<li><a href="gemini.php">ChatBot</a></li>
-						<li><a href="disconnect.php">Logout</a></li>
+						<li><a href="disconnect.php">Se déconnecter</a></li>
 					</ul>
 				</nav>
 
@@ -57,10 +58,10 @@ if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 1) {
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1 text-center">
 						<ul class="hero-area-tree">
-							<li><a href="index.php">Home</a></li>
-							<li>Contact</li>
+							<li><a href="index.php">Accueil</a></li>
+							<li>Espace Étudiant</li>
 						</ul>
-						<h1 class="white-text">Get In Touch</h1>
+						<h1 class="white-text">Espace Étudiant</h1>
 
 					</div>
 				</div>

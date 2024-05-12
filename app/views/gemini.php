@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+if (!isset($_SESSION["user_role"])) {
+    header("Location: index.php");
+}
+
+
 $responseData = null;
 
 // Function to escape markdown characters
@@ -103,9 +109,9 @@ if (isset($_POST["prompt"]) and !empty($_POST["prompt"])) {
 				</div>
 				<nav id="nav">
 					<ul class="main-menu nav navbar-nav navbar-right">
-						<li><a href="index.php">Home</a></li>
-                        <li><a href="signIn.php">Sign In</a></li>
-                        <li><a href="addUser.php">Sign Up</a></li>
+						<li><a href="index.php">Accueil</a></li>
+                        <li><a href="dashboardFront.php">Dashboard</a></li>
+                        <li><a href="disconnect.php">Se déconnecter</a></li>
                         <!--
                         <li><a href="coures.html">Courses</a></li>
                         <li><a href="devoir.html">Devoir</a></li>
@@ -130,7 +136,7 @@ if (isset($_POST["prompt"]) and !empty($_POST["prompt"])) {
 							<li><a href="index.php">Home</a></li>
 							<li>Chat</li>
 						</ul>
-						<h1 class="white-text">Chat with our integrated AI ChatBot</h1>
+						<h1 class="white-text">Discutez avec notre chatbot IA</h1>
 
 					</div>
 				</div>
@@ -142,10 +148,10 @@ if (isset($_POST["prompt"]) and !empty($_POST["prompt"])) {
             <!-- /Hero-area -->
             <form id="chatForm" action="" method="POST">
                 <div>
-                    <label for="prompt">Chat Prompt</label>
-                    <input type="text" id="prompt" name="prompt" required placeholder="Ask a question">
+                    <label for="prompt">Champ de discussion</label>
+                    <input type="text" id="prompt" name="prompt" required placeholder="Posez une question">
                     <hr>
-                <button type="submit">Submit your question</button>
+                <button type="submit">Soumettre votre question</button>
             </form>
 
             <?php

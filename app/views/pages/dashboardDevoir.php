@@ -1,5 +1,13 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION["user_role"]) or $_SESSION["user_role"] != 0) {
+    http_response_code(403);
+    header("Location:../index.php");
+    exit();
+}
+
 include __DIR__.'/../../controllers/DevoirC.php';
 include __DIR__.'/../../models/devoir.php';
 
